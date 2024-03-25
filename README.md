@@ -52,11 +52,17 @@ For example a small Java client might look like the following. This assumes that
 
 
 import java.sql.Connection;
+
 import java.sql.DriverManager;
+
 import java.sql.PreparedStatement;
+
 import java.sql.ResultSet;
+
 import java.sql.Statement;
+
 public class DerbyTest {
+
     private Connection connect = null;
     private Statement statement = null;
     private ResultSet resultSet = null;
@@ -103,6 +109,7 @@ public class DerbyTest {
     public static void main(String[] args) throws Exception {
         DerbyTest dao = new DerbyTest();
     }
+    
 }
 
 
