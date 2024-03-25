@@ -1,6 +1,7 @@
 
 # Setup And Installation Guide
-#Apache Derby. This articles explains how to install the Apache Derby database, how to start the Derby server, how to connect via Java to Derby and how to use the #Derby command line tool to issue SQL statements. The installation of Apache Derby as Windows Service is also explained.
+# Apache Derby. This articles explains how to install the Apache Derby database, how to start the Derby server, how to connect via Java to Derby and how to use 
+# the Derby command line tool to issue SQL statements. The installation of Apache Derby as Windows Service is also explained.
 1. Apache Derby
 1.1. Overview
 Apache Derby is an open source database written in Java. It is free and performs well. Apache Derby is used in the JDK and is called Java DB. Apache Derby and Java DB are essentially the same. Apache Derby is the reference implementation for JDBC 4.0 and compatible to ANSI-SQL. JDBC is the Java interface to connect to databases.
