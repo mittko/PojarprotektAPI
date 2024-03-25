@@ -56,12 +56,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
 public class DerbyTest {
     private Connection connect = null;
     private Statement statement = null;
     private ResultSet resultSet = null;
-
     public DerbyTest() throws Exception {
         try {
 
@@ -105,7 +103,6 @@ public class DerbyTest {
     public static void main(String[] args) throws Exception {
         DerbyTest dao = new DerbyTest();
     }
-
 }
 
 
