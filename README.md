@@ -35,6 +35,7 @@ If connections should be allowed from localhost and any other server use the fol
 startNetworkServer -h 0.0.0.0
 
 3.2. Connect to the Derby Server via Java
+
 To connect to the network server via Java code you need to have the derbyclient.jar in your classpath. The network connection string to this database is the IP address of the server:portnumber. For example for a server which is running on localhost you can create a new database via the following string.
 
 jdbc:derby://localhost:1527/dbname;create=true
@@ -47,6 +48,8 @@ If you want to connect to an existing embedded database you can use the followin
 jdbc:derby:c:\temp\mydatabase
 
 For example a small Java client might look like the following. This assumes that you have already created a schema called a table users with the columns "name" and "number".
+
+
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -104,6 +107,8 @@ public class DerbyTest {
     }
 
 }
+
+
 4. Derby tools
 4.1. Using Derby from the command line (ij)
 ij is Derby’s interactive JDBC scripting tool. It is a simple utility for running scripts or interactive queries against a Derby database. To start the tool open a command shell and type in "ij". This will start a shell program which can connect to your database and execute SQL commands . Stop this tool with typing in "exit;" and pressing Enter. In ij every line needs to get terminated with ;.
