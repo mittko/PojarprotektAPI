@@ -1,12 +1,13 @@
 
 # Setup And Installation Guide
 # Apache Derby. This articles explains how to install the Apache Derby database, how to start the Derby server, how to connect via Java to Derby and how to use # # the Derby command line tool to issue SQL statements. The installation of Apache Derby as Windows Service is also explained.
-1. Apache Derby \n
+1. Apache Derby
 1.1. Overview
 Apache Derby is an open source database written in Java. It is free and performs well. Apache Derby is used in the JDK and is called Java DB. Apache Derby and Java DB are essentially the same. Apache Derby is the reference implementation for JDBC 4.0 and compatible to ANSI-SQL. JDBC is the Java interface to connect to databases.
 
 1.2. Server vs. embedded mode
 Derby can be used in a server mode and in a so-called embedded mode. If Derby runs in the server mode you start the Derby network server which will be responsible for handling the database requests. In embedded mode Derby runs within the JVM (Java Virtual Machine) of the application. In this mode only the application can access the database, e.g. another user / application will not be able to access the database.
+
 2. Installation of Derby
 Download the latest Derby version from the Apache website http://db.apache.org/derby/. Choose the bin distribution and extract this zip to a directory of your choice.
 
@@ -21,9 +22,11 @@ Add DERBY_HOME/bin to the "path" environment variable
 Use the following command in the command line to start the Derby network server (located in the Derby installation directory/bin). On Microsoft Windows it is possible to use the .bat version.
 
 startNetworkServer
+
 This will start the network server which can serve an unlimited number of databases. By default the server will be listening on port 1527 but this can be changed via the -p option.
 
-startNetworkServer -p 3301
+startNetworkServer -h localhost -p 3301
+
 By default Derby will only accept connections from the localhost. To make the Derby server accept connections also from other hosts use the following start command. Replace "sampleserver.sampledomain.com" with the name or the IP of the server. The server will then accept connections only from other servers as the localhost.
 
 startNetworkServer -h sampleserver.sampledomain.com
@@ -36,8 +39,13 @@ To connect to the network server via Java code you need to have the derbyclient.
 
 jdbc:derby://localhost:1527/dbname;create=true
 If you want to connect to an existing database you can use the following string.
-
 jdbc:derby://localhost:1527/c:\temp\mydatabase
+
+
+To connect to the embedded embedded database you need derby.jar, derbynet.jar, derbyrun.jar and derbytools.jar 
+If you want to connect to an existing embedded database you can use the following string.
+jdbc:derby:c:\temp\mydatabase
+
 For example a small Java client might look like the following. This assumes that you have already created a schema called a table users with the columns "name" and "number".
 
 import java.sql.Connection;
@@ -122,6 +130,7 @@ Use the tool dblook. Type dblook on the console to see the options, the tool is 
 dblook -d 'jdbc:derby:c:\temp\db\FAQ\db' -z myschema -o lars.sql
 
 5. Running Derby Server as Windows Service
+
 The Derby Server is started via a batch program. In a server environment this batch program should be automatically started if the server is rebooted / started. The windows program "srvmgr" can be used for this purpose. For details on the tool please check the official documentation; the following will give a description on how this can be done for Apache Derby. Install "srvmgr" and remember the installation path.
 
 We will call our service "ApacheDerby" and the batch file is located under "C:\db-derby\bin\startNetworkServer.bat". In the command line register a service via:
