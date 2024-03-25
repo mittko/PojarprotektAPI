@@ -121,6 +121,7 @@ disconnect;
 To run a SQL script from ij use the following command.
 
 run 'sqlscript.sql'
+
 You can also use SQL directly, e.g.
 
 select * from SCHEMA1.USERS where NUMBER='lars'
