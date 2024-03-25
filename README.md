@@ -176,3 +176,18 @@ Value Name: AppParameters
 Data Type : REG_SZ
 String : -h 0.0.0.0
 Now start/adjust the service in the Windows services control panel.
+
+# CREATE EMPTY DB FROM EXISTING DATABASE SCHEMA
+
+1.open cmd type ij and press enter
+
+2. establish connection and create database if not exist (create = true; must to be added):
+connect to embedded db  'jdbc:derby:D:/NEWDB;create=true';
+connect to network db 'jdbc:derby://127.0.0.1:1527/NEWDB:/RealDB';
+
+3. run command to create install.sql file from every existing database (use dblook utility) for example -> dblook -d 'jdbc:derby:D:/RealDB'; -z APP -o install.sql;
+
+4. type run 'install.sql';
+
+Done ! New database NEWDB is created , Happy Coding !
+
