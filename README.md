@@ -51,6 +51,11 @@ For example a small Java client might look like the following. This assumes that
 
 
 
+
+
+
+
+
 import java.sql.Connection;
 
 import java.sql.DriverManager;
