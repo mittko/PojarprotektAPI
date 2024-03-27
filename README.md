@@ -218,3 +218,19 @@ Database created: org.apache.derby.impl.jdbc.EmbedConnection@105374791 (XID = 16
 The first approach, with single embedded app and external interface, allows you to control the resources and access much better, though. If you are going for efficiency/speed, the time spent might be well worth it.
 
 All that said, if single embedded Derby is not enough, developers usually look for other options, e.g. PostgreSQL. Even "DB2 Express C" could be an option to ship with your app. It really depends on the use case.
+
+# Create Spring Boot Tempplate Project 
+Starting with Spring Initializr
+You can use this pre-initialized project and click Generate to download a ZIP file. This project is configured to fit the examples in this tutorial.
+
+To manually initialize the project:
+
+Navigate to https://start.spring.io. This service pulls in all the dependencies you need for an application and does most of the setup for you.
+
+Choose either Gradle or Maven and the language you want to use. This guide assumes that you chose Java.
+
+Click Dependencies and select Spring Web.
+
+Click Generate.
+
+Download the resulting ZIP file, which is an archive of a web application that is configured with your choices.
