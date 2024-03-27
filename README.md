@@ -189,5 +189,14 @@ connect to network db 'jdbc:derby://127.0.0.1:1527/NEWDB:/RealDB';
 
 4. type run 'install.sql';
 
-Done ! New database NEWDB is created , Happy Coding !
+# Connect to database from multiple clients
+ou cannot share Derby DB files among multiple JVMs. The first JVM to create or connect to existing DB will lock the files to itself so that no data corruption can occur.
+
+You have two choices:
+
+embed your database into just one app that resides in a single JVM end expose higher level API to work with it either via REST or via event bus (or both)
+start Derby as a server, then the architecture looks like this:
+
+![image](https://github.com/mittko/PojarprotektAPI/assets/6568414/fba090d8-a1c3-492c-b9b4-11dd3fb700c1)
+
 
