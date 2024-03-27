@@ -200,13 +200,19 @@ start Derby as a server, then the architecture looks like this:
 ![image](https://github.com/mittko/PojarprotektAPI/assets/6568414/fba090d8-a1c3-492c-b9b4-11dd3fb700c1)
 
 The second approach might is easier to achieve (less coding), and the URL for JDBC or Hibernate will look like jdbc:derby://localhost:1527/derbyDB You need, of course, create the database first, for which you need to connect once with jdbc:derby://localhost:1527/derbyDB?create=true. You should not use `create=true in Hibernate pool. Just do this:
+
+
+
 try (Connection c = DriverManager.getConnection("jdbc:derby:derbyDB;create=true")) {
     System.out.println("Database created: "+c);
 } catch (SQLException e) {
     e.printStackTrace(); //adapt it to your logging/error processing
 }
 
+
+
 The code above prints something like:
+
 Database created: org.apache.derby.impl.jdbc.EmbedConnection@105374791 (XID = 167), (SESSIONID = 1), (DATABASE = derbyDB), (DRDAID = null) 
 
 The first approach, with single embedded app and external interface, allows you to control the resources and access much better, though. If you are going for efficiency/speed, the time spent might be well worth it.
