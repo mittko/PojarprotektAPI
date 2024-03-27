@@ -190,7 +190,7 @@ connect to network db 'jdbc:derby://127.0.0.1:1527/NEWDB:/RealDB';
 4. type run 'install.sql';
 
 # Connect to database from multiple clients
-ou cannot share Derby DB files among multiple JVMs. The first JVM to create or connect to existing DB will lock the files to itself so that no data corruption can occur.
+you cannot share Derby DB files among multiple JVMs. The first JVM to create or connect to existing DB will lock the files to itself so that no data corruption can occur.
 
 You have two choices:
 
