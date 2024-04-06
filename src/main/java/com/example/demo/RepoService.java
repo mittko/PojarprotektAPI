@@ -1,15 +1,19 @@
 package com.example.demo;
 
+import com.example.demo.exceptions.MyControllerAdvice;
+import com.example.demo.requestbodies.DemoPostBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 @Service
 public class RepoService {
+
+    @Autowired
+    MyControllerAdvice myControllerAdvice;
+
     public Connection getNetworkConnection() {
         String networkConnection = "jdbc:derby://localhost:1527/D:/RealDB";
         Connection connection;
@@ -44,45 +48,24 @@ public class RepoService {
         return connection;
     }
 
-    public ArrayList<ArrayList<Object>> getTEST() {
+    public ArrayList<Object> getTEST() throws SQLException {
 
-        String command = "select * from TEST3";
+        String command = "select * from TEST3a";
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
         ResultSetMetaData resultSetMetaData;
-        ArrayList<ArrayList<Object>> data = new ArrayList<>();
-        try {
+        ArrayList<Object> data = new ArrayList<>();
+
 
             connection = getEmbeddedConnection();
             statement = connection.createStatement();
             resultSet = statement.executeQuery(command);
             while (resultSet.next()) {
-                resultSetMetaData = resultSet.getMetaData();
-                ArrayList<Object> list = new ArrayList<>();
-                for(int column = 0;column < resultSetMetaData.getColumnCount();column++) {
-                    System.out.print(resultSet.getString(column+1)+" ");
-                    list.add(resultSet.getString(column+1));
-                }
-                data.add(list);
+                DemoPostBody body = new DemoPostBody(resultSet.getInt(1),resultSet.getString(2));
+                data.add(body);
                 System.out.println();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if(resultSet != null) {
-                    resultSet.close();
-                }
-                if(statement != null) {
-                    statement.close();
-                }
-                if(connection != null) {
-                    connection.commit();
-                }
-            } catch (SQLException ignored) {}
-
-        }
         return data;
     }
 
