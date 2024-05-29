@@ -1,5 +1,6 @@
-package com.example.demo;
+package com.example.demo.services;
 
+import com.example.demo.db.DBManager;
 import com.example.demo.exceptions.MyControllerAdvice;
 import com.example.demo.requestbodies.DemoPostBody;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,43 +15,16 @@ public class RepoService {
     @Autowired
     MyControllerAdvice myControllerAdvice;
 
-    public Connection getNetworkConnection() {
-        String networkConnection = "jdbc:derby://localhost:1527/D:/RealDB";
-        Connection connection;
 
-        try {
-            String driver = "org.apache.derby.jdbc.ClientDriver";
-            try {
-                Class.forName(driver).newInstance();
-            } catch (InstantiationException | ClassNotFoundException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-            connection = DriverManager.getConnection(networkConnection);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return connection;
+    public ArrayList<Object[]> getDataArrays(String command) throws SQLException {
+        return DBManager.getListOfObjectArrays(command);
     }
-    public Connection getEmbeddedConnection() {
-        String embeddedConnection = "jdbc:derby:D:/RealDB";
-        Connection connection;
-        try {
-            String driver = "org.apache.derby.jdbc.EmbeddedDriver";
-            try {
-                Class.forName(driver).newInstance();
-            } catch (InstantiationException | ClassNotFoundException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-            connection = DriverManager.getConnection(embeddedConnection);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return connection;
+    public ArrayList<Object> getData(String command) throws SQLException {
+        return DBManager.getListOfObjects(command);
     }
 
-    public ArrayList<Object> getTEST() throws SQLException {
+    public ArrayList<Object> getTEST(String command) throws SQLException {
 
-        String command = "select * from TEST3a";
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -58,7 +32,7 @@ public class RepoService {
         ArrayList<Object> data = new ArrayList<>();
 
 
-            connection = getEmbeddedConnection();
+            connection = DBManager.getEmbeddedConnection();
             statement = connection.createStatement();
             resultSet = statement.executeQuery(command);
             while (resultSet.next()) {
@@ -75,7 +49,7 @@ public class RepoService {
         Statement statement = null;
         int insert = 0;
         try {
-            connection = getEmbeddedConnection();
+            connection = DBManager.getEmbeddedConnection();
             statement = connection.createStatement();
             insert = statement.executeUpdate(command);
         } catch (SQLException e) {
