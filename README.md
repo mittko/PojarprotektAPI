@@ -229,6 +229,10 @@ Navigate to https://start.spring.io. This service pulls in all the dependencies 
 
 Choose either Gradle or Maven and the language you want to use. This guide assumes that you chose Java.
 
+#Configure application.properties in SpringProject
+1. spring.datasource.url=jdbc:derby:path/to/db
+2. spring.datasource.driver-class-name=org.apache.derby.jdbc.EmbeddedDriver
+
 Click Dependencies and select Spring Web.
 
 Click Generate.
