@@ -234,3 +234,7 @@ Click Dependencies and select Spring Web.
 Click Generate.
 
 Download the resulting ZIP file, which is an archive of a web application that is configured with your choices.
+
+#Configure application.properties in SpringProject
+1. spring.datasource.url=jdbc:derby:path/to/db
+2. spring.datasource.driver-class-name=org.apache.derby.jdbc.EmbeddedDriver
