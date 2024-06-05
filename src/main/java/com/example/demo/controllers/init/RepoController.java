@@ -1,5 +1,6 @@
 package com.example.demo.controllers.init;
 
+import com.example.demo.models.TechnicalReview;
 import com.example.demo.services.RepoService;
 import com.example.demo.requestbodies.DemoPostBody;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,8 @@ public class RepoController {
     }
 
     @GetMapping(path="/tech_review")
-    public @ResponseBody ArrayList<Object[]> getTechnicalReview(@RequestParam("from") String from,
-    @RequestParam("to") String to) throws SQLException {
+    public @ResponseBody ArrayList<TechnicalReview> getTechnicalReview(@RequestParam("from") String from,
+                                                                       @RequestParam("to") String to) throws SQLException {
 
         return repoService.getDataArrays(String.format("select client, type, wheight, T_O, P, HI, number, additional_data from ProtokolTableDB5 "
                 + " where (T_O <> 'не' and T_O between Date('%s') and Date('%s') or P <> 'не' and P between Date('%s')" +

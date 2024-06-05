@@ -2,6 +2,7 @@ package com.example.demo.services;
 
 import com.example.demo.db.DBManager;
 import com.example.demo.exceptions.MyControllerAdvice;
+import com.example.demo.models.TechnicalReview;
 import com.example.demo.requestbodies.DemoPostBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,25 @@ public class RepoService {
     MyControllerAdvice myControllerAdvice;
 
 
-    public ArrayList<Object[]> getDataArrays(String command) throws SQLException {
-        return DBManager.getListOfObjectArrays(command);
+    public ArrayList<TechnicalReview> getDataArrays(String command) throws SQLException {
+        ResultSet resultSet =  DBManager.getListOfObjectArrays(command);
+        ArrayList<TechnicalReview> technicalReviewList = new ArrayList<>();
+        while (resultSet.next()) {
+
+                TechnicalReview technicalReview = new TechnicalReview();
+
+                technicalReview.setClient(resultSet.getString(1));
+                technicalReview.setType(resultSet.getString(2));
+                technicalReview.setWheight(resultSet.getString(3));
+                technicalReview.setT_O(resultSet.getString(4));
+                technicalReview.setP(resultSet.getString(5));
+                technicalReview.setHI(resultSet.getString(6));
+                technicalReview.setNumber(resultSet.getString(7));
+                technicalReview.setAdditional_data(resultSet.getString(8));
+
+                technicalReviewList.add(technicalReview);
+        }
+        return technicalReviewList;
     }
     public ArrayList<Object> getData(String command) throws SQLException {
         return DBManager.getListOfObjects(command);

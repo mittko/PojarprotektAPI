@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class DBManager {
 
     private Connection getNetworkConnection() {
-        String networkConnection = "jdbc:derby://localhost:1527/D:/RealDB";
+        String networkConnection = "jdbc:derby://localhost:1527/D:/RealDBAPI";
         Connection connection;
 
         try {
@@ -23,7 +23,7 @@ public class DBManager {
         return connection;
     }
     public static Connection getEmbeddedConnection() {
-        String embeddedConnection = "jdbc:derby:D:/RealDB";
+        String embeddedConnection = "jdbc:derby:D:/RealDBAPI";
         Connection connection;
         try {
             String driver = "org.apache.derby.jdbc.EmbeddedDriver";
@@ -39,26 +39,22 @@ public class DBManager {
         return connection;
     }
 
-    public static ArrayList<Object[]> getListOfObjectArrays(String command) throws SQLException {
-        ArrayList<Object[]> listOfArr = new ArrayList<>();
-        Connection connection;
-        Statement statement;
-        ResultSet resultSet;
-        ResultSetMetaData resultSetMetaData;
-
-        connection = getEmbeddedConnection();
-        statement = connection.createStatement();
-        resultSet = statement.executeQuery(command);
-
-        while (resultSet.next()) {
-            resultSetMetaData = resultSet.getMetaData();
-            ArrayList<String> objects = new ArrayList<>();
-            for (int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
-                objects.add(resultSet.getString(i+1));
-            }
-            listOfArr.add(objects.toArray());
+    public static ResultSet getListOfObjectArrays(String command) throws SQLException {
+        Connection connection = null;
+        Statement statement = null;
+        try {
+            connection = getEmbeddedConnection();
+            statement = connection.createStatement();
+        }finally {
+//            if(statement != null) {
+//                statement.close();
+//            }
+//            if(connection != null) {
+//                connection.close();
+//            }
         }
-        return listOfArr;
+
+        return statement != null ? statement.executeQuery(command) : null;
     }
     public static ArrayList<Object> getListOfObjects(String command) throws SQLException {
         ArrayList<Object> listOfObjects = new ArrayList<>();
