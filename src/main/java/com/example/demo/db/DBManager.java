@@ -39,7 +39,7 @@ public class DBManager {
         return connection;
     }
 
-    public static ResultSet getListOfObjectArrays(String command) throws SQLException {
+    public static ResultSet getResultSet(String command) throws SQLException {
         Connection connection = null;
         Statement statement = null;
         try {
@@ -47,6 +47,7 @@ public class DBManager {
             statement = connection.createStatement();
         }finally {
 //            if(statement != null) {
+
 //                statement.close();
 //            }
 //            if(connection != null) {

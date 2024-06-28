@@ -1,6 +1,7 @@
 package com.example.demo.models;
 
-public class TechnicalReview {
+public class TechnicalReview<T> {
+
     String client;
     String type;
     String wheight;
