@@ -47,7 +47,7 @@ To connect to the embedded embedded database you need derby.jar, derbynet.jar, d
 If you want to connect to an existing embedded database you can use the following string.
 jdbc:derby:c:\temp\mydatabase
 
-For example a small Java firm might look like the following. This assumes that you have already created a schema called a table users with the columns "name" and "number".
+For example a small Java client might look like the following. This assumes that you have already created a schema called a table users with the columns "name" and "number".
 
 
 
