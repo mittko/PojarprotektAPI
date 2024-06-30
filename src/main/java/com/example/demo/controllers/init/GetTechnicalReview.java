@@ -17,7 +17,7 @@ public class GetTechnicalReview<T> {
     @Autowired
     public RepoService<T> repoService;
     @GetMapping(path = "/client_data")
-    public @ResponseBody ArrayList<Object> getClientData(@RequestParam("client") String client) throws SQLException {
+    public @ResponseBody T getClientData(@RequestParam("client") String client) throws SQLException {
         return repoService.getData(String.format("select * from FirmsTable where firm = '%s'",client));
     }
     @GetMapping(path="/tech_review")

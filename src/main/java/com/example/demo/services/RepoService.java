@@ -2,9 +2,9 @@ package com.example.demo.services;
 
 import com.example.demo.db.DBManager;
 import com.example.demo.exceptions.MyControllerAdvice;
+import com.example.demo.models.Firm;
 import com.example.demo.models.TechnicalReview;
 import com.example.demo.models.User;
-import com.example.demo.requestbodies.DemoPostBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,8 +39,29 @@ public class RepoService<T> {
         }
         return technicalReviewList;
     }
-    public ArrayList<Object> getData(String command) throws SQLException {
-        return DBManager.getListOfObjects(command);
+    public T getData(String command) throws SQLException {
+        ResultSet resultSet = DBManager.getResultSet(command);
+        Firm<T> firm = new Firm<T>();
+        while (resultSet.next()) {
+
+                firm.setFirm(resultSet.getString(1));
+                firm.setCity(resultSet.getString(2));
+                firm.setAddress(resultSet.getString(3));
+                firm.setEik(resultSet.getString(4));
+                firm.setMol(resultSet.getString(5));
+                firm.setEmail(resultSet.getString(6));
+                firm.setPerson(resultSet.getString(7));
+                firm.setTelPerson(resultSet.getString(8));
+                firm.setBank(resultSet.getString(9));
+                firm.setBic(resultSet.getString(10));
+                firm.setIban(resultSet.getString(11));
+                firm.setDiscount(resultSet.getString(12));
+                firm.setIncorrect_person(resultSet.getString(13));
+                firm.setVat_registration(resultSet.getString(14));
+
+                break;
+            }
+        return (T) firm;
     }
 
     public T getUser(String command) throws SQLException {
