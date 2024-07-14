@@ -1,6 +1,7 @@
 package com.example.demo.controllers.reports;
 
 import com.example.demo.callbacks.ResultSetCallback;
+import com.example.demo.models.BrakReports;
 import com.example.demo.models.ProtokolReports;
 import com.example.demo.models.ServiceOrderReports;
 import com.example.demo.services.RepoService;
@@ -123,6 +124,51 @@ public class ReportsController<T> {
             }
         });
         return protokolReportList;
+    }
+
+    @GetMapping(path = "/brack")
+    public @ResponseBody ArrayList<T> getBrack(
+            @RequestParam(value = "client", required = false) String client,
+            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "wheight", required = false) String wheight,
+            @RequestParam(value = "brand", required = false) String brand,
+            @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "barcod", required = false) String barcod,
+            @RequestParam(value = "serial", required = false) String serial,
+            @RequestParam(value = "number", required = false) String number,
+            @RequestParam(value = "fromDate", required = false) String fromDate,
+            @RequestParam(value = "toDate", required = false) String toDate) throws SQLException {
+
+
+        String command = "select client, type, wheight, brand, category, reasons, barcod, serial, number, tehnik, date from BrackTableDB2";
+
+        command += constructQueryWithPrams(client,number,type,wheight,category,brand,null,
+                serial,barcod, fromDate,toDate);
+
+        ArrayList<T> brackList = new ArrayList<>();
+        repoService.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+
+                    BrakReports brakReports = new BrakReports();
+                    brakReports.setClient(resultSet.getString(1));
+                    brakReports.setType(resultSet.getString(2));
+                    brakReports.setWheight(resultSet.getString(3));
+                    brakReports.setBrand(resultSet.getString(4));
+                    brakReports.setCategory(resultSet.getString(5));
+                    brakReports.setReasons(resultSet.getString(6));
+                    brakReports.setBarcod(resultSet.getString(7));
+                    brakReports.setSerial(resultSet.getString(8));
+                    brakReports.setNumber(resultSet.getString(9));
+                    brakReports.setTehnik(resultSet.getString(10));
+                    brakReports.setDate(resultSet.getString(11));
+
+                    brackList.add((T) brakReports);
+                }
+            }
+        });
+        return brackList;
     }
 
     private String constructQueryWithPrams(String client,
