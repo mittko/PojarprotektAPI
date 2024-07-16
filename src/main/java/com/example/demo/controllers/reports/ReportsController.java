@@ -1,9 +1,7 @@
 package com.example.demo.controllers.reports;
 
 import com.example.demo.callbacks.ResultSetCallback;
-import com.example.demo.models.BrakReports;
-import com.example.demo.models.ProtokolReports;
-import com.example.demo.models.ServiceOrderReports;
+import com.example.demo.models.*;
 import com.example.demo.services.RepoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -169,6 +167,135 @@ public class ReportsController<T> {
             }
         });
         return brackList;
+    }
+
+    @GetMapping(path = "/invoices")
+    public @ResponseBody ArrayList<T> getInvoices(
+            @RequestParam(value = "client", required = false) String client,
+            @RequestParam(value = "invoice", required = false) String invoice,
+            @RequestParam(value = "artikul", required = false) String artikul,
+            @RequestParam(value = "fromDate", required = false) String fromDate,
+            @RequestParam(value = "toDate", required = false) String toDate) throws SQLException {
+
+        return getInvoiceData("InvoiceParentDB5","InvoiceChildDB7",client,invoice,artikul,
+                fromDate,toDate);
+    }
+
+    @GetMapping(path = "/proforms")
+    public @ResponseBody ArrayList<T> getProforms(
+            @RequestParam(value = "client", required = false) String client,
+            @RequestParam(value = "proform", required = false) String proform,
+            @RequestParam(value = "artikul", required = false) String artikul,
+            @RequestParam(value = "fromDate", required = false) String fromDate,
+            @RequestParam(value = "toDate", required = false) String toDate) throws SQLException {
+
+        return getInvoiceData("ProformParentDB","ProformChildDB2",client,proform,artikul,fromDate,toDate);
+    }
+
+    @GetMapping(path = "/acquittance")
+    public @ResponseBody ArrayList<T> getAcquittance(
+            @RequestParam(value = "client", required = false) String client,
+            @RequestParam(value = "acquittance", required = false) String acquittance,
+            @RequestParam(value = "artikul", required = false) String artikul,
+            @RequestParam(value = "fromDate", required = false) String fromDate,
+            @RequestParam(value = "toDate", required = false) String toDate) throws SQLException {
+
+        ArrayList<T> acquittanceList = new ArrayList<>();
+
+        String acquittanceParent = "AcquittanceParentDB";
+        String acquittanceChild = "AcquittanceChildDB";
+        String command =
+                String.format("select * from %s , " +
+                        "%s where %s.id = %s.id", acquittanceParent,acquittanceChild, acquittanceParent, acquittanceChild);
+
+        command += constructQueryWithParamsForInvoice(acquittanceParent,acquittanceChild,client, acquittance,
+                artikul, fromDate, toDate);
+
+        repoService.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+                    AcquittanceReports acquittanceReports = new AcquittanceReports();
+
+                    acquittanceReports.setId(resultSet.getString(1));
+                    acquittanceReports.setValue(resultSet.getString(2));
+                    acquittanceReports.setClient(resultSet.getString(3));
+                    acquittanceReports.setSaller(resultSet.getString(4));
+                    acquittanceReports.setDate(resultSet.getString(5));
+                    acquittanceReports.set_id(resultSet.getString(6));
+                    acquittanceReports.setArtikul(resultSet.getString(7));
+                    acquittanceReports.setMed(resultSet.getString(8));
+                    acquittanceReports.setQuantity(resultSet.getString(9));
+                    acquittanceReports.setPrice(resultSet.getString(10));
+                    acquittanceReports.set_value(resultSet.getString(11));
+                    acquittanceReports.set_client(resultSet.getString(12));
+
+                    acquittanceList.add((T) acquittanceReports);
+                }
+            }
+        });
+        return acquittanceList;
+    }
+
+
+
+    private ArrayList<T> getInvoiceData(String invoiceParent, String invoiceChild, String client,
+                                        String invoice, String artikul, String fromDate, String toDate) throws SQLException {
+        ArrayList<T> invoices = new ArrayList<>();
+
+        String command =
+                String.format("select * from %s , " +
+                        "%s where %s.id = %s.id", invoiceParent,invoiceChild, invoiceParent, invoiceChild);
+
+        command += constructQueryWithParamsForInvoice(invoiceParent,invoiceChild,client, invoice,
+                artikul, fromDate, toDate);
+        repoService.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+
+                while (resultSet.next()) {
+                    InvoiceReports invoiceReports = new InvoiceReports();
+
+                    invoiceReports.setId(resultSet.getString(1));
+                    invoiceReports.setPayment(resultSet.getString(2));
+                    invoiceReports.setDiscount(resultSet.getString(3));
+                    invoiceReports.setValue(resultSet.getString(4));
+                    invoiceReports.setClient(resultSet.getString(5));
+                    invoiceReports.setSaller(resultSet.getString(6));
+                    invoiceReports.setDate(resultSet.getString(7));
+
+                    invoiceReports.set_id(resultSet.getString(9));
+                    invoiceReports.setMake(resultSet.getString(10));
+                    invoiceReports.setMed(resultSet.getString(11));
+                    invoiceReports.setQuantity(resultSet.getString(12));
+                    invoiceReports.setPrice(resultSet.getString(13));
+                    invoiceReports.set_value(resultSet.getString(14));
+                    invoiceReports.set_client(resultSet.getString(15));
+
+                    invoices.add((T) invoiceReports);
+                }
+            }
+        });
+        return invoices;
+    }
+    private String constructQueryWithParamsForInvoice(String invoiceParent, String invoiceChild,
+                                                      String client, String invoice,
+                                                      String artikul, String fromDate, String toDate) {
+        String command = "";
+        if(client != null) {
+            command += String.format(" and %s.client = '%s'",invoiceParent, client);
+        }
+        if(invoice != null) {
+            command += String.format(" and %s.id = '%s'",invoiceParent, invoice);
+        }
+        if(artikul != null) {
+            command += String.format(" and %s.artikul = '%s'",invoiceChild, artikul);
+        }
+        if(fromDate != null && toDate != null) {
+            command += String.format(" and %s.date between Date('%s') and Date('%s')", invoiceParent, fromDate, toDate);
+        }
+        command += " order by CAST(date as DATE) desc";
+        return command;
     }
 
     private String constructQueryWithPrams(String client,
