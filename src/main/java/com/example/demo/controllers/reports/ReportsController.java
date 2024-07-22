@@ -263,6 +263,7 @@ public class ReportsController<T> {
                     invoiceReports.setClient(resultSet.getString(5));
                     invoiceReports.setSaller(resultSet.getString(6));
                     invoiceReports.setDate(resultSet.getString(7));
+                    invoiceReports.setProtokol(resultSet.getString(8));
 
                     invoiceReports.set_id(resultSet.getString(9));
                     invoiceReports.setMake(resultSet.getString(10));
@@ -271,6 +272,8 @@ public class ReportsController<T> {
                     invoiceReports.setPrice(resultSet.getString(13));
                     invoiceReports.set_value(resultSet.getString(14));
                     invoiceReports.set_client(resultSet.getString(15));
+                    invoiceReports.setKontragent(resultSet.getString(16));
+                    invoiceReports.setInvoiceByKontragent(resultSet.getString(17));
 
                     invoices.add((T) invoiceReports);
                 }

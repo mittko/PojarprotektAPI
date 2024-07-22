@@ -6,7 +6,10 @@ import com.example.demo.models.InvoiceForPeriodReports;
 import com.example.demo.models.SaleReport;
 import com.example.demo.models.SaleReport2;
 import com.example.demo.services.RepoService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -146,9 +149,9 @@ public class ArtikulAvailabilityReports<T> {
 
     @GetMapping(path = "/sales2")
     public @ResponseBody ArrayList<T> getSales2(
-      @RequestParam(value = "fromDate") String fromDate,
-      @RequestParam(value = "toDate") String toDate,
-      @RequestParam(value = "artikul") String artikul) throws SQLException {
+            @RequestParam(value = "fromDate") String fromDate,
+            @RequestParam(value = "toDate") String toDate,
+            @RequestParam(value = "artikul") String artikul, HttpServletResponse response) throws SQLException {
         ArrayList<T> sales = new ArrayList<>();
         String command = String.format("select DeliveryArtikulsDB2.invoiceByKontragent, DeliveryArtikulsDB2.kontragent," +
                 " DeliveryArtikulsDB2.date, DeliveryArtikulsDB2.artikul, DeliveryArtikulsDB2.value" +
@@ -171,6 +174,9 @@ public class ArtikulAvailabilityReports<T> {
                   }
             }
         });
+
+        response.addHeader("my-custom-header","tra la la");
+
         return sales;
     }
 }

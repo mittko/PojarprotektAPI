@@ -11,6 +11,16 @@ public class InvoiceReports {
     private String saller;
     private String date;
 
+    public String getProtokol() {
+        return protokol;
+    }
+
+    public void setProtokol(String protokol) {
+        this.protokol = protokol;
+    }
+
+    private String protokol;
+
 
     // child table varaiables
     private String _id;
@@ -20,6 +30,26 @@ public class InvoiceReports {
     private String price;
     private String _value;
     private String _client;
+
+    public String getKontragent() {
+        return kontragent;
+    }
+
+    public void setKontragent(String kontragent) {
+        this.kontragent = kontragent;
+    }
+
+    public String getInvoiceByKontragent() {
+        return invoiceByKontragent;
+    }
+
+    public void setInvoiceByKontragent(String invoiceByKontragent) {
+        this.invoiceByKontragent = invoiceByKontragent;
+    }
+
+    private String kontragent;
+
+    private String invoiceByKontragent;
 
     public String getId() {
         return id;
