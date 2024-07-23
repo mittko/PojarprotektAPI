@@ -281,6 +281,73 @@ public class ReportsController<T> {
         });
         return invoices;
     }
+    @GetMapping(path = "/artikuls")
+    public @ResponseBody ArrayList<T> getArtikuls() throws SQLException {
+             ArrayList<T> artikuls = new ArrayList<>();
+             String command = "select distinct artikul from ArtikulsDB order by artikul";
+             repoService.getResult(command, new ResultSetCallback() {
+                 @Override
+                 public void result(ResultSet resultSet) throws SQLException {
+                     while (resultSet.next()) {
+                         ArtikulsReports artikulsReports = new ArtikulsReports();
+                         artikulsReports.setArtikul(resultSet.getString(1));
+                         artikuls.add((T) artikulsReports);
+                     }
+                 }
+             });
+             return artikuls;
+    }
+    @GetMapping(path = "/new_extinguishers")
+    public @ResponseBody ArrayList<T> getNewExtinguishers() throws SQLException {
+        ArrayList<T> newExtinguishers = new ArrayList<>();
+        String command =  "select type from NewExtinguishersDB3 where quantitiy > 0";
+        repoService.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+                    NewExtinguishersReports extinguishersReports = new NewExtinguishersReports();
+                    extinguishersReports.setType(resultSet.getString(1));
+                    newExtinguishers.add((T) extinguishersReports);
+                }
+            }
+        });
+        return newExtinguishers;
+    }
+
+    @GetMapping(path = "/clients")
+    public @ResponseBody ArrayList<T> getClients() throws SQLException {
+        ArrayList<T> clients = new ArrayList<>();
+        String command = "select firm, incorrectPerson from FirmsTable";
+        repoService.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+                    ClientReports clientReport = new ClientReports();
+                    clientReport.setName(resultSet.getString(1));
+                    clientReport.setIncorrectPerson(resultSet.getString(2));
+
+                    clients.add((T) clientReport);
+                }
+            }
+        });
+
+        String command2 = "select name, incorrectPerson from PersonsTable";
+        repoService.getResult(command2, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+                    ClientReports clientReports = new ClientReports();
+                    clientReports.setName(resultSet.getString(1));
+                    clientReports.setIncorrectPerson(resultSet.getString(2));
+
+                    clients.add((T) clientReports);
+                }
+            }
+        });
+       return clients;
+    }
+
+
     private String constructQueryWithParamsForInvoice(String invoiceParent, String invoiceChild,
                                                       String client, String invoice,
                                                       String artikul, String fromDate, String toDate) {
