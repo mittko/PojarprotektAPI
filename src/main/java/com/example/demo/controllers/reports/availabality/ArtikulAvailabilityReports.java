@@ -26,9 +26,37 @@ public class ArtikulAvailabilityReports<T> {
     RepoService<T> repoService;
 
     @GetMapping(path = "/deliveries")
-    public @ResponseBody ArrayList<T> getDeliveries() throws SQLException {
-        ArrayList<T> deliveries = new ArrayList<>();
+    public @ResponseBody ArrayList<T> getDeliveries(
+            @RequestParam(value = "kontragent",required = false) String kontragent,
+            @RequestParam(value = "invoiceByKontragent",required = false) String invoiceByKontragent,
+            @RequestParam(value = "artikul",required = false) String artikul,
+            @RequestParam(value = "fromDate", required = false) String fromDate,
+            @RequestParam(value = "toDate", required = false) String toDate) throws SQLException {
+
         String command = "select artikul, quantity, med, value, kontragent, invoiceByKontragent, date, operator from DeliveryArtikulsDB2";
+        int selectedCriterii = 0;
+        String placeholder = "";
+        if(kontragent != null) {
+            placeholder = "where";
+            command += String.format(" %s kontragent = '%s'", placeholder,kontragent);
+            selectedCriterii++;
+        }
+        if(invoiceByKontragent != null) {
+            placeholder = (selectedCriterii == 0) ? "where" : "and";
+            command += String.format(" %s invoiceByKontragent = '%s'",placeholder,invoiceByKontragent);
+            selectedCriterii++;
+        }
+        if(artikul != null) {
+            placeholder = (selectedCriterii == 0) ? "where" : "and";
+            command += String.format(" %s artikul = '%s'",placeholder,artikul);
+            selectedCriterii++;
+        }
+        if(fromDate != null && toDate != null) {
+            placeholder = (selectedCriterii == 0) ? "where" : "and";
+            command += String.format(" %s date between Date('%s') and Date('%s')", placeholder,fromDate,toDate);
+        }
+
+        ArrayList<T> deliveries = new ArrayList<>();
 
         repoService.getResult(command, new ResultSetCallback() {
             @Override
