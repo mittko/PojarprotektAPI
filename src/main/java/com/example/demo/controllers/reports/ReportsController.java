@@ -347,6 +347,51 @@ public class ReportsController<T> {
        return clients;
     }
 
+    @GetMapping(path = "/credit_notes")
+    public @ResponseBody ArrayList<T> getCreditNotes(
+            @RequestParam(value = "invoice",required = false) String invoice) throws SQLException {
+        ArrayList<T> creditNotes = new ArrayList<>();
+        String command = "select id ,payment ," +
+                "discount , invoiceSum , client , saller, " +
+                "date , protokol_id , artikul , med, " +
+                "quantity , price , value , kontragent, " +
+                "invoiceByKontragent, note_id, credit_note_date from CreditNoteDB";
+
+        if(invoice != null) {
+            command += String.format(" where id = '%s'",invoice);
+        }
+        command += " order by CAST(credit_note_date as DATE) desc";
+        repoService.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+
+                    CreditNoteReports creditNote = new CreditNoteReports();
+                    creditNote.setId(resultSet.getString(1));
+                    creditNote.setPayment(resultSet.getString(2));
+                    creditNote.setDiscount(resultSet.getString(3));
+                    creditNote.setInvoiceSum(resultSet.getString(4));
+                    creditNote.setClient(resultSet.getString(5));
+                    creditNote.setSaller(resultSet.getString(6));
+                    creditNote.setDate(resultSet.getString(7));
+                    creditNote.setProtokol_id(resultSet.getString(8));
+                    creditNote.setArtikul(resultSet.getString(9));
+                    creditNote.setMed(resultSet.getString(10));
+                    creditNote.setQuantity(resultSet.getString(11));
+                    creditNote.setPrice(resultSet.getString(12));
+                    creditNote.setValue(resultSet.getString(13));
+                    creditNote.setKontragent(resultSet.getString(14));
+                    creditNote.setInvoiceByKontragent(resultSet.getString(15));
+                    creditNote.setNote_id(resultSet.getString(16));
+                    creditNote.setCredit_note_date(resultSet.getString(17));
+
+                    creditNotes.add((T) creditNote);
+                }
+            }
+        });
+        return creditNotes;
+    }
+
 
     private String constructQueryWithParamsForInvoice(String invoiceParent, String invoiceChild,
                                                       String client, String invoice,
