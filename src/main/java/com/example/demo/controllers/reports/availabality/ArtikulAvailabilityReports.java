@@ -139,10 +139,10 @@ public class ArtikulAvailabilityReports<T> {
     }
 
     @GetMapping(path = "/sales")
-    public @ResponseBody ArrayList<T> getSales(
+    public @ResponseBody ArrayList<T> getInvoiceDataForSale(
             @RequestParam(value = "fromDate") String fromDate,
             @RequestParam(value = "toDate") String toDate,
-            @RequestParam(value = "artikul") String artikul) throws SQLException {
+            @RequestParam(value = "artikul", required = false) String artikul) throws SQLException {
         ArrayList<T> sales = new ArrayList<>();
         String command = String.format("select InvoiceChildDB7.id, InvoiceChildDB7.client, InvoiceChildDB7.invoiceByKontragent," +
                 " InvoiceChildDB7.kontragent, InvoiceChildDB7.artikul, InvoiceChildDB7.med, InvoiceChildDB7.quantity," +
@@ -150,7 +150,9 @@ public class ArtikulAvailabilityReports<T> {
                 " InvoiceParentDB5  where InvoiceParentDB5.id = InvoiceChildDB7.id" +
                 " and InvoiceParentDB5.date between Date('%s') and Date('%s')",fromDate,toDate);
 
-        command += String.format(" and  InvoiceChildDB7.artikul = " + "'%s'",artikul);
+        if(artikul != null) {
+            command += String.format(" and  InvoiceChildDB7.artikul = " + "'%s'", artikul);
+        }
         command += " order by CAST(date as DATE) desc";
         repoService.getResult(command, new ResultSetCallback() {
             @Override
@@ -176,15 +178,18 @@ public class ArtikulAvailabilityReports<T> {
     }
 
     @GetMapping(path = "/sales2")
-    public @ResponseBody ArrayList<T> getSales2(
+    public @ResponseBody ArrayList<T> getDeliveryDataForSale(
             @RequestParam(value = "fromDate") String fromDate,
             @RequestParam(value = "toDate") String toDate,
-            @RequestParam(value = "artikul") String artikul, HttpServletResponse response) throws SQLException {
+            @RequestParam(value = "artikul",required = false) String artikul, HttpServletResponse response) throws SQLException {
         ArrayList<T> sales = new ArrayList<>();
         String command = String.format("select DeliveryArtikulsDB2.invoiceByKontragent, DeliveryArtikulsDB2.kontragent," +
                 " DeliveryArtikulsDB2.date, DeliveryArtikulsDB2.artikul, DeliveryArtikulsDB2.value" +
                 " from DeliveryArtikulsDB2 where DeliveryArtikulsDB2.date between " + "Date('%s') and Date('%s')", fromDate, toDate);
-        command += String.format(" and DeliveryArtikulsDB2.artikul = '%s'",artikul);
+
+        if(artikul != null) {
+            command += String.format(" and DeliveryArtikulsDB2.artikul = '%s'", artikul);
+        }
         command += " order by CAST(date as DATE) desc";
         repoService.getResult(command, new ResultSetCallback() {
             @Override
