@@ -2,7 +2,6 @@ package com.example.demo.models;
 
 public class InvoiceReports {
 
-    // parent table variables
     private String id;
     private String payment;
     private String discount;
@@ -10,6 +9,27 @@ public class InvoiceReports {
     private String client;
     private String saller;
     private String date;
+
+    private String invoiceByKontragent;
+    private String kontragent;
+    private String med;
+    private String protokol;
+    private String _id;
+    private String make;
+    private String quantity;
+    private String price;
+    private String _value;
+    private String _client;
+
+    private String artikul;
+
+    public String getArtikul() {
+        return artikul;
+    }
+
+    public void setArtikul(String artikul) {
+        this.artikul = artikul;
+    }
 
     public String getProtokol() {
         return protokol;
@@ -19,17 +39,7 @@ public class InvoiceReports {
         this.protokol = protokol;
     }
 
-    private String protokol;
 
-
-    // child table varaiables
-    private String _id;
-    private String make;
-    private String med;
-    private String quantity;
-    private String price;
-    private String _value;
-    private String _client;
 
     public String getKontragent() {
         return kontragent;
@@ -47,9 +57,7 @@ public class InvoiceReports {
         this.invoiceByKontragent = invoiceByKontragent;
     }
 
-    private String kontragent;
 
-    private String invoiceByKontragent;
 
     public String getId() {
         return id;

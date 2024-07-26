@@ -2,14 +2,10 @@ package com.example.demo.controllers.reports.availabality;
 
 import com.example.demo.callbacks.ResultSetCallback;
 import com.example.demo.models.DeliveryReports;
-import com.example.demo.models.InvoiceForPeriodReports;
-import com.example.demo.models.SaleReport;
-import com.example.demo.models.SaleReport2;
+import com.example.demo.models.InvoiceReports;
 import com.example.demo.services.RepoService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -80,65 +76,9 @@ public class ArtikulAvailabilityReports<T> {
         return deliveries;
     }
 
-    @GetMapping(path = "/delivery_for_period")
-    public @ResponseBody ArrayList<T> getDeliveriesForReports(
-            @RequestParam(value = "artikul") String artikul,
-            @RequestParam(value = "fromDate") String fromDate,
-            @RequestParam(value = "toDate") String toDate) throws SQLException {
-        ArrayList<T> deliveries = new ArrayList<>();
-        String command = String.format("select DeliveryArtikulsDB2.artikul, DeliveryArtikulsDB2.quantity, " +
-                "DeliveryArtikulsDB2.value, DeliveryArtikulsDB2.date from " +
-                "DeliveryArtikulsDB2 where DeliveryArtikulsDB2.date between Date('%s') and Date('%s')", fromDate, toDate);
 
-        command += String.format(" and DeliveryArtikulsDB2.artikul = '%s'", artikul);
-        command += " order by CAST(date as DATE) desc";
-        repoService.getResult(command, new ResultSetCallback() {
-            @Override
-            public void result(ResultSet resultSet) throws SQLException {
-               while (resultSet.next()) {
-                   DeliveryReports deliveryReports = new DeliveryReports();
-                   deliveryReports.setArtikul(resultSet.getString(1));
-                   deliveryReports.setQuantity(resultSet.getString(2));
-                   deliveryReports.setValue(resultSet.getString(3));
-                   deliveryReports.setDate(resultSet.getString(4));
 
-                   deliveries.add((T) deliveryReports);
-               }
-            }
-        });
-        return deliveries;
-    }
-
-    @GetMapping(path = "/invoice_for_period")
-    public @ResponseBody ArrayList<T> getInvoiceForPeriod(
-            @RequestParam(value = "fromDate") String fromDate,
-            @RequestParam(value = "toDate") String toDate,
-            @RequestParam(value = "artikul") String artikul) throws SQLException {
-        ArrayList<T> invoices = new ArrayList<>();
-        String command = String.format("select InvoiceChildDB7.artikul, InvoiceChildDB7.quantity," +
-                " InvoiceChildDB7.price, InvoiceParentDB5.date from InvoiceChildDB7 , " +
-                "InvoiceParentDB5 where InvoiceParentDB5.id = InvoiceChildDB7.id " +
-                "and InvoiceParentDB5.date between Date('%s') and Date('%s')", fromDate, toDate);
-        command += String.format(" and  InvoiceChildDB7.artikul = '%s'", artikul);
-        command += " order by CAST(date as DATE) desc";
-        repoService.getResult(command, new ResultSetCallback() {
-            @Override
-            public void result(ResultSet resultSet) throws SQLException {
-               while (resultSet.next()) {
-                   InvoiceForPeriodReports invoice = new InvoiceForPeriodReports();
-                   invoice.setArtikul(resultSet.getString(1));
-                   invoice.setQuantity(resultSet.getString(2));
-                   invoice.setPrice(resultSet.getString(3));
-                   invoice.setDate(resultSet.getString(4));
-
-                   invoices.add((T) invoice);
-               }
-            }
-        });
-        return invoices;
-    }
-
-    @GetMapping(path = "/sales")
+    @GetMapping(path = "/invoice_data_for_sales")
     public @ResponseBody ArrayList<T> getInvoiceDataForSale(
             @RequestParam(value = "fromDate") String fromDate,
             @RequestParam(value = "toDate") String toDate,
@@ -158,26 +98,26 @@ public class ArtikulAvailabilityReports<T> {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-                    SaleReport saleReport = new SaleReport();
+                    InvoiceReports invoiceDataForSalesReports = new InvoiceReports();
 
-                    saleReport.setId(resultSet.getString(1));
-                    saleReport.setClient(resultSet.getString(2));
-                    saleReport.setInvoiceByKontragent(resultSet.getString(3));
-                    saleReport.setKontragent(resultSet.getString(4));
-                    saleReport.setArtikul(resultSet.getString(5));
-                    saleReport.setMed(resultSet.getString(6));
-                    saleReport.setQuantity(resultSet.getString(7));
-                    saleReport.setPrice(resultSet.getString(8));
-                    saleReport.setDate(resultSet.getString(9));
+                    invoiceDataForSalesReports.setId(resultSet.getString(1));
+                    invoiceDataForSalesReports.setClient(resultSet.getString(2));
+                    invoiceDataForSalesReports.setInvoiceByKontragent(resultSet.getString(3));
+                    invoiceDataForSalesReports.setKontragent(resultSet.getString(4));
+                    invoiceDataForSalesReports.setArtikul(resultSet.getString(5));
+                    invoiceDataForSalesReports.setMed(resultSet.getString(6));
+                    invoiceDataForSalesReports.setQuantity(resultSet.getString(7));
+                    invoiceDataForSalesReports.setPrice(resultSet.getString(8));
+                    invoiceDataForSalesReports.setDate(resultSet.getString(9));
 
-                    sales.add((T) saleReport);
+                    sales.add((T) invoiceDataForSalesReports);
                 }
             }
         });
         return sales;
     }
 
-    @GetMapping(path = "/sales2")
+    @GetMapping(path = "/delivery_data_for_sales")
     public @ResponseBody ArrayList<T> getDeliveryDataForSale(
             @RequestParam(value = "fromDate") String fromDate,
             @RequestParam(value = "toDate") String toDate,
@@ -196,7 +136,7 @@ public class ArtikulAvailabilityReports<T> {
             public void result(ResultSet resultSet) throws SQLException {
                   while (resultSet.next()) {
 
-                      SaleReport2 sale = new SaleReport2();
+                      DeliveryReports sale = new DeliveryReports();
                       sale.setInvoiceByKontragent(resultSet.getString(1));
                       sale.setKontragent(resultSet.getString(2));
                       sale.setDate(resultSet.getString(3));
@@ -211,5 +151,68 @@ public class ArtikulAvailabilityReports<T> {
         response.addHeader("my-custom-header","tra la la");
 
         return sales;
+    }
+
+    @GetMapping(path = "/delivery_data_for_availability")
+    public @ResponseBody ArrayList<T> getDeliveriesForReports(
+            @RequestParam(value = "artikul",required = false) String artikul,
+            @RequestParam(value = "fromDate") String fromDate,
+            @RequestParam(value = "toDate") String toDate) throws SQLException {
+        ArrayList<T> deliveries = new ArrayList<>();
+        String command = String.format("select DeliveryArtikulsDB2.artikul, DeliveryArtikulsDB2.quantity, " +
+                "DeliveryArtikulsDB2.value, DeliveryArtikulsDB2.date from " +
+                "DeliveryArtikulsDB2 where DeliveryArtikulsDB2.date between Date('%s') and Date('%s')", fromDate, toDate);
+
+        if(artikul != null) {
+            command += String.format(" and DeliveryArtikulsDB2.artikul = '%s'", artikul);
+        }
+        command += " order by CAST(date as DATE) desc";
+        repoService.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+                    DeliveryReports deliveryReports = new DeliveryReports();
+                    deliveryReports.setArtikul(resultSet.getString(1));
+                    deliveryReports.setQuantity(resultSet.getString(2));
+                    deliveryReports.setValue(resultSet.getString(3));
+                    deliveryReports.setDate(resultSet.getString(4));
+
+                    deliveries.add((T) deliveryReports);
+                }
+            }
+        });
+        return deliveries;
+    }
+
+    @GetMapping(path = "/invoice_data_for_availability")
+    public @ResponseBody ArrayList<T> getInvoiceForPeriod(
+            @RequestParam(value = "fromDate") String fromDate,
+            @RequestParam(value = "toDate") String toDate,
+            @RequestParam(value = "artikul", required = false) String artikul) throws SQLException {
+        ArrayList<T> invoices = new ArrayList<>();
+        String command = String.format("select InvoiceChildDB7.artikul, InvoiceChildDB7.quantity," +
+                " InvoiceChildDB7.price, InvoiceParentDB5.date from InvoiceChildDB7 , " +
+                "InvoiceParentDB5 where InvoiceParentDB5.id = InvoiceChildDB7.id " +
+                "and InvoiceParentDB5.date between Date('%s') and Date('%s')", fromDate, toDate);
+
+        if(artikul != null) {
+            command += String.format(" and  InvoiceChildDB7.artikul = '%s'", artikul);
+        }
+        command += " order by CAST(date as DATE) desc";
+        repoService.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+                    InvoiceReports invoice = new InvoiceReports();
+                    invoice.setArtikul(resultSet.getString(1));
+                    invoice.setQuantity(resultSet.getString(2));
+                    invoice.setPrice(resultSet.getString(3));
+                    invoice.setDate(resultSet.getString(4));
+
+                    invoices.add((T) invoice);
+                }
+            }
+        });
+        return invoices;
     }
 }
