@@ -5,4 +5,5 @@ import java.sql.SQLException;
 
 public abstract class ResultSetCallback {
     public abstract void result(ResultSet resultSet) throws SQLException;
+
 }
