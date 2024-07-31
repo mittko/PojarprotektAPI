@@ -2,8 +2,10 @@ package com.example.demo.controllers.reports;
 
 import com.example.demo.callbacks.PreparedStatementCallback;
 import com.example.demo.callbacks.ResultSetCallback;
+import com.example.demo.exceptions.DublicateNumberException;
 import com.example.demo.models.*;
 import com.example.demo.services.RepoService;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -349,9 +351,15 @@ public class ReportsController<T> {
         });
        return clients;
     }
-    @PostMapping(path = "/insert_credit_note2")
-    public String createCreditNotes(@RequestBody  BodyList bodyList) throws Exception {
 
+
+
+    @PostMapping(path = "/insert_credit_note")
+    public @ResponseBody String createCreditNotes(@RequestBody  BodyList bodyList) throws Exception {
+
+        String invoice = bodyList.getList().get(0).getId();
+
+        String nextCreditNoteId = "";
         HashSet<String> numberOfSet = new HashSet<>();
         String command = "select id from CreditNoteDB";
         repoService.getResult(command, new ResultSetCallback() {
@@ -364,10 +372,13 @@ public class ReportsController<T> {
             }
         });
 
+        if(numberOfSet.contains(invoice)) {
+            throw new DublicateNumberException("Вече има създадено кредитно известие за тази фактура");
+        }
+
         for(CreditNoteBody body : bodyList.getList()) {
             command = "update ArtikulsDB"
                     + " set quantity = (quantity - ?) where (artikul = ? and client = ? and invoice  = ?)";//  and (quantity > 0)
-            int update = 0;
             repoService.insert(command, new PreparedStatementCallback<T>() {
                 @Override
                 public void callback(PreparedStatement ps) throws SQLException {
@@ -393,7 +404,7 @@ public class ReportsController<T> {
                 }
             });
 
-            String nextCreditNoteId = String.valueOf(numberOfSet.size() + 1);
+            nextCreditNoteId = String.valueOf(numberOfSet.size() + 1);
 
             command = "insert into CreditNoteDB values ('" + body.getId() + "','" + body.getPayment() + "','"
                     + body.getDiscount()
@@ -407,66 +418,9 @@ public class ReportsController<T> {
             repoService.insert(command);
         }
 
-        return "";
-    }
-    @PostMapping(path = "/insert_credit_note")
-    public String createCreditNote(CreditNoteBody body) throws Exception {
-
-        HashSet<String> numberOfSet = new HashSet<>();
-        String command = "select id from CreditNoteDB";
-        repoService.getResult(command, new ResultSetCallback() {
-            @Override
-            public void result(ResultSet resultSet) throws SQLException {
-                while (resultSet.next()) {
-                    String numberAsString = resultSet.getString(1);
-                    numberOfSet.add(numberAsString);
-                }
-            }
-        });
-
-        command = "update ArtikulsDB"
-                + " set quantity = (quantity - ?) where (artikul = ? and client = ? and invoice  = ?)";//  and (quantity > 0)
-        int update = 0;
-        repoService.insert(command, new PreparedStatementCallback<T>() {
-            @Override
-            public void callback(PreparedStatement ps) throws SQLException {
-                ps.setString(1, String.valueOf(body.getQuantity()));
-                ps.setString(2, body.getArtikul());
-                ps.setString(3, body.getKontragent());
-                ps.setString(4, body.getInvoiceByKontragent());
-                ps.executeUpdate();
-            }
-        });
-
-        command = "update InvoiceChildDB7 set quantity = ? " +
-                "where (artikul = ? and kontragent = ? and invoiceByKontragent  = ?) and (InvoiceChildDB7.id = ?)";
-        repoService.insert(command, new PreparedStatementCallback<T>() {
-            @Override
-            public void callback(PreparedStatement ps) throws SQLException {
-                ps.setString(1,  "0");
-                ps.setString(2, body.getArtikul());
-                ps.setString(3, body.getKontragent());
-                ps.setString(4, body.getInvoiceByKontragent());
-                ps.setString(5, body.getId());
-                ps.executeUpdate();
-            }
-        });
-
-        String nextCreditNoteId = String.valueOf(numberOfSet.size()+1);
-
-        command = "insert into CreditNoteDB values ('" + body.getId() + "','" + body.getPayment() + "','"
-                + body.getDiscount()
-                + "','" + body.getSum() + "','" + body.getClient() + "','" + body.getSaller() + "','" +
-                body.getDate() + "','" + body.getProtokol_id() +
-                "','" + body.getArtikul() + "','" + body.getMed() + "','" + body.getQuantity() + "','"
-                + body.getPrice() + "','" + body.getValue()
-                + "','" + body.getKontragent() + "','" + body.getInvoiceByKontragent() + "','" +
-                nextCreditNoteId + "','"+  body.getCredit_note_date() +"')";
-
-        repoService.insert(command);
-
         return nextCreditNoteId;
     }
+
 
     @GetMapping(path = "/credit_notes")
     public @ResponseBody ArrayList<T> getCreditNotes(

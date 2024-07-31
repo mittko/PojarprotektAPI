@@ -2,6 +2,7 @@ package com.example.demo.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.hibernate.TypeMismatchException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,13 +65,19 @@ public class MyControllerAdvice {
     AsyncRequestNotUsableException*/
 
 
-    @ExceptionHandler( {SQLException.class} )
+    @ExceptionHandler( {SQLException.class, DublicateNumberException.class} )
     public ResponseEntity<HashMap<String,String>> handleException(final Exception exception,
                                                               final HttpServletRequest request) {
         exception.printStackTrace();
 
         HashMap<String,String> msg = new HashMap<>();
         msg.put("error",exception.getMessage());
+
+        if(exception instanceof DublicateNumberException) {
+            msg.put("error code",String.valueOf((((DublicateNumberException)exception).getErrorCode())));
+            return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
+        }
+
 
         // get error code and accordingly this code return appropriate http status
         msg.put("error code",String.valueOf((((SQLException)exception).getErrorCode())));
