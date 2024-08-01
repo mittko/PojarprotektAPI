@@ -47,7 +47,7 @@ public class ReportsController<T> {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-                    ServiceOrderReports<T> serviceOrderReports = new ServiceOrderReports<T>();
+                    ServiceOrderModel<T> serviceOrderReports = new ServiceOrderModel<T>();
                     serviceOrderReports.setClient(resultSet.getString(1));
                     serviceOrderReports.setType(resultSet.getString(2));
                     serviceOrderReports.setWheight(resultSet.getString(3));
@@ -351,7 +351,7 @@ public class ReportsController<T> {
 
 
     @PostMapping(path = "/insert_credit_note")
-    public @ResponseBody String createCreditNotes(@RequestBody  BodyList bodyList) throws Exception {
+    public @ResponseBody String createCreditNotes(@RequestBody CreditNoteBodyList bodyList) throws Exception {
 
         String invoice = bodyList.getList().get(0).getId();
 

@@ -1,6 +1,6 @@
 package com.example.demo.models;
 
-public class ServiceOrderReports<T> {
+public class ServiceOrderModel<T> {
     private String client;
     private String type;
     private String wheight;
