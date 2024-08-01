@@ -13,7 +13,7 @@ public class Firm<T> {
      private String bank;
      private String bic;
      private String iban;
-     private String discount;
+     private int discount;
      private String incorrect_person;
      private String vat_registration;
 
@@ -61,7 +61,7 @@ public class Firm<T> {
         this.iban = iban;
     }
 
-    public void setDiscount(String discount) {
+    public void setDiscount(int discount) {
         this.discount = discount;
     }
 
@@ -117,7 +117,7 @@ public class Firm<T> {
         return iban;
     }
 
-    public String getDiscount() {
+    public int getDiscount() {
         return discount;
     }
 

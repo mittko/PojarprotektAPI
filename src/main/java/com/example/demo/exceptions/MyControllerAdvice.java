@@ -1,6 +1,9 @@
 package com.example.demo.exceptions;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import jakarta.annotation.Priority;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.tomcat.util.json.JSONParserConstants;
 import org.hibernate.TypeMismatchException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
@@ -65,6 +68,8 @@ public class MyControllerAdvice {
     AsyncRequestNotUsableException*/
 
 
+
+
     @ExceptionHandler( {SQLException.class, DublicateNumberException.class} )
     public ResponseEntity<HashMap<String,String>> handleException(final Exception exception,
                                                               final HttpServletRequest request) {
@@ -73,10 +78,19 @@ public class MyControllerAdvice {
         HashMap<String,String> msg = new HashMap<>();
         msg.put("error",exception.getMessage());
 
+        if(exception instanceof SQLException) {
+            String state = ((SQLException)exception).getSQLState();
+            if(state.equals("23505")) {
+                msg.put("error","Дублиране на данни");
+                return new ResponseEntity<>(msg,HttpStatus.BAD_REQUEST);
+            }
+        }
         if(exception instanceof DublicateNumberException) {
             msg.put("error code",String.valueOf((((DublicateNumberException)exception).getErrorCode())));
             return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
         }
+
+
 
 
         // get error code and accordingly this code return appropriate http status

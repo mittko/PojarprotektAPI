@@ -5,18 +5,14 @@ import com.example.demo.callbacks.ResultSetCallback;
 import com.example.demo.exceptions.DublicateNumberException;
 import com.example.demo.models.*;
 import com.example.demo.services.RepoService;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 @RestController
 public class ReportsController<T> {
@@ -379,7 +375,7 @@ public class ReportsController<T> {
         for(CreditNoteBody body : bodyList.getList()) {
             command = "update ArtikulsDB"
                     + " set quantity = (quantity - ?) where (artikul = ? and client = ? and invoice  = ?)";//  and (quantity > 0)
-            repoService.insert(command, new PreparedStatementCallback<T>() {
+            repoService.execute(command, new PreparedStatementCallback<T>() {
                 @Override
                 public void callback(PreparedStatement ps) throws SQLException {
                     ps.setString(1, String.valueOf(body.getQuantity()));
@@ -392,7 +388,7 @@ public class ReportsController<T> {
 
             command = "update InvoiceChildDB7 set quantity = ? " +
                     "where (artikul = ? and kontragent = ? and invoiceByKontragent  = ?) and (InvoiceChildDB7.id = ?)";
-            repoService.insert(command, new PreparedStatementCallback<T>() {
+            repoService.execute(command, new PreparedStatementCallback<T>() {
                 @Override
                 public void callback(PreparedStatement ps) throws SQLException {
                     ps.setString(1, "0");
@@ -415,7 +411,7 @@ public class ReportsController<T> {
                     + "','" + body.getKontragent() + "','" + body.getInvoiceByKontragent() + "','" +
                     nextCreditNoteId + "','" + body.getCredit_note_date() + "')";
 
-            repoService.insert(command);
+            repoService.execute(command);
         }
 
         return nextCreditNoteId;
