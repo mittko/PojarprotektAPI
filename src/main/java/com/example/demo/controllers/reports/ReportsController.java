@@ -97,28 +97,28 @@ public class ReportsController<T> {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                while (resultSet.next()) {
-                   ProtokolReports<T> protokolReports = new ProtokolReports<T>();
-                   protokolReports.setClient(resultSet.getString(1));
-                   protokolReports.setType(resultSet.getString(2));
-                   protokolReports.setWheight(resultSet.getString(3));
-                   protokolReports.setBarcod(resultSet.getString(4));
-                   protokolReports.setSerial(resultSet.getString(5));
-                   protokolReports.setCategory(resultSet.getString(6));
-                   protokolReports.setBrand(resultSet.getString(7));
-                   protokolReports.setT_O(resultSet.getString(8));
-                   protokolReports.setP(resultSet.getString(9));
-                   protokolReports.setHI(resultSet.getString(10));
-                   protokolReports.setParts(resultSet.getString(11));
-                   protokolReports.setValue(resultSet.getString(12));
-                   protokolReports.setNumber(resultSet.getString(13));
-                   protokolReports.setPerson(resultSet.getString(14));
-                   protokolReports.setDate(resultSet.getString(15));
-                   protokolReports.setKontragent(resultSet.getString(16));
-                   protokolReports.setInvoiceByKontragent(resultSet.getString(17));
-                   protokolReports.setAdditional_data(resultSet.getString(18));
-                   protokolReports.setUptodate(resultSet.getString(19));
+                   ProtokolModels<T> protokolModels = new ProtokolModels<T>();
+                   protokolModels.setClient(resultSet.getString(1));
+                   protokolModels.setType(resultSet.getString(2));
+                   protokolModels.setWheight(resultSet.getString(3));
+                   protokolModels.setBarcod(resultSet.getString(4));
+                   protokolModels.setSerial(resultSet.getString(5));
+                   protokolModels.setCategory(resultSet.getString(6));
+                   protokolModels.setBrand(resultSet.getString(7));
+                   protokolModels.setT_O(resultSet.getString(8));
+                   protokolModels.setP(resultSet.getString(9));
+                   protokolModels.setHI(resultSet.getString(10));
+                   protokolModels.setParts(resultSet.getString(11));
+                   protokolModels.setValue(resultSet.getString(12));
+                   protokolModels.setNumber(resultSet.getString(13));
+                   protokolModels.setPerson(resultSet.getString(14));
+                   protokolModels.setDate(resultSet.getString(15));
+                   protokolModels.setKontragent(resultSet.getString(16));
+                   protokolModels.setInvoiceByKontragent(resultSet.getString(17));
+                   protokolModels.setAdditional_data(resultSet.getString(18));
+                   protokolModels.setUptodate(resultSet.getString(19));
 
-                   protokolReportList.add((T) protokolReports);
+                   protokolReportList.add((T) protokolModels);
                }
             }
         });

@@ -2,16 +2,18 @@ package com.example.demo.controllers.office;
 
 
 import com.example.demo.callbacks.PreparedStatementCallback;
+import com.example.demo.callbacks.ResultSetCallback;
+import com.example.demo.models.ProtokolModels;
 import com.example.demo.models.ServiceOrderBodyList;
 import com.example.demo.models.ServiceOrderModel;
 import com.example.demo.services.RepoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 @RestController
 public class ServiceOrderController<T> {
@@ -53,5 +55,44 @@ public class ServiceOrderController<T> {
             });
         }
         return result[0];
+    }
+
+    @GetMapping("/protokol_info_barcode")
+    public @ResponseBody T getProtokolInfoByBarcode(@RequestParam(value = "barcode", required = false) String barcode,
+                                                    @RequestParam(value = "serial_number", required = false) String serialNumber) throws SQLException {
+        ProtokolModels<T> protokolModel = new ProtokolModels<>();
+        String command;
+        if(barcode != null) {
+            command = "select client, type, wheight, "
+                    + "barcod, serial, category, brand, T_O, P, HI, additional_data from ProtokolTableDB5" +
+                    " where barcod = '" + barcode + "'";
+        } else {
+            command = "select client, type, wheight, "
+                    + "barcod, serial, category, brand, T_O, P, HI, additional_data from ProtokolTableDB5" +
+                    " where serial = '" + serialNumber + "'";
+        }
+
+
+        service.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+
+                    protokolModel.setClient(resultSet.getString(1));
+                    protokolModel.setType(resultSet.getString(2));
+                    protokolModel.setWheight(resultSet.getString(3));
+                    protokolModel.setBarcod(resultSet.getString(4));
+                    protokolModel.setSerial(resultSet.getString(5));
+                    protokolModel.setCategory(resultSet.getString(6));
+                    protokolModel.setBrand(resultSet.getString(7));
+                    protokolModel.setT_O(resultSet.getString(8));
+                    protokolModel.setP(resultSet.getString(9));
+                    protokolModel.setHI(resultSet.getString(10));
+                    protokolModel.setAdditional_data(resultSet.getString(11));
+
+                }
+            }
+        });
+        return (T) protokolModel;
     }
 }
