@@ -18,7 +18,7 @@ public class GetClient<T> {
     public RepoService<T> service;
 
     @PostMapping(path = "/insert_client")
-    public int insertClient(@RequestBody Firm body) throws SQLException {
+    public Integer insertClient(@RequestBody Firm body) throws SQLException {
          String command = "insert into PersonsTable values (" + "'" + body.getFirm() + "'"
                  + "," + "'" + body.getTelPerson()+ "'" + "," + "'" + body.getDiscount() + "'" + ","
                  + "'" + body.getIncorrect_person() + "')";
@@ -26,7 +26,7 @@ public class GetClient<T> {
     }
 
     @PostMapping(path = "/insert_firm")
-    public int insertFirm(@RequestBody Firm<T> firm) throws SQLException {
+    public Integer insertFirm(@RequestBody Firm<T> firm) throws SQLException {
         String command = "insert into FirmsTable values (" + "'" + firm.getFirm() + "','"
                 + firm.getCity() + "','" + firm.getAddress() + "','" + firm.getEik() + "','" + firm.getMol()
                 + "','" + firm.getEmail() + "','" + firm.getPerson() + "','" + firm.getTelPerson()
@@ -36,7 +36,7 @@ public class GetClient<T> {
     }
 
     @PutMapping(path = "/edit_client/{old_name}")
-    public int editClient(@RequestBody Firm<T> firm, @PathVariable("old_name") String oldName) throws SQLException {
+    public Integer editClient(@RequestBody Firm<T> firm, @PathVariable("old_name") String oldName) throws SQLException {
         String command = "update PersonsTable set name = '" + firm.getFirm()
                 + "',tel = '" + firm.getTelPerson() + "',discount = '" + firm.getDiscount()
                 + "',incorrectPerson = '" + firm.getIncorrect_person()
@@ -51,7 +51,7 @@ public class GetClient<T> {
 
 
     @PutMapping(path = "/edit_firm/{old_name}")
-    public int editFirm(@RequestBody Firm<T> firm, @PathVariable("old_name") String oldName) throws SQLException {
+    public Integer editFirm(@RequestBody Firm<T> firm, @PathVariable("old_name") String oldName) throws SQLException {
         String command = "update FirmsTable set firm = '" + firm.getFirm()
                 + "' ,city = '" + firm.getCity() + "',address = '" + firm.getAddress()
                 + "',eik = '" + firm.getEik() + "',mol = '" + firm.getMol() + "',email = '"

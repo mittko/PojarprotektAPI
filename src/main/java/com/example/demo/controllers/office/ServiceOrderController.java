@@ -95,4 +95,27 @@ public class ServiceOrderController<T> {
         });
         return (T) protokolModel;
     }
+
+    @GetMapping("/next_serial_number")
+    public @ResponseBody String getNextSerialNumber() throws SQLException {
+       String command = "select * from SerialTable";
+        final String[] nextSerialNumber = {""};
+       service.getResult(command, new ResultSetCallback() {
+           @Override
+           public void result(ResultSet resultSet) throws SQLException {
+               while (resultSet.next()) {
+                   nextSerialNumber[0] = resultSet.getString(1);
+                   break;
+               }
+           }
+       });
+       int serialAsInt = Integer.parseInt(nextSerialNumber[0]);
+
+       nextSerialNumber[0] = String.format("%07d",serialAsInt+1);
+
+       command = "update SerialTable set serial = '" + nextSerialNumber[0] + "'";
+       service.execute(command);
+
+       return nextSerialNumber[0];
+    }
 }
