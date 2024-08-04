@@ -54,6 +54,18 @@ public class ServiceOrderController<T> {
                 }
             });
         }
+
+        for(String barcode : serviceOrderBodyList.getBarcodesToUpdateInProtokol()) {
+            command = "update ProtokolTableDB5 set uptodate = ? where barcod = ?";
+            service.execute(command, new PreparedStatementCallback<T>() {
+                @Override
+                public void callback(PreparedStatement ps) throws SQLException {
+                    ps.setString(1,"not null");
+                    ps.setString(2, barcode);
+                    int update = ps.executeUpdate();
+                }
+            });
+        }
         return result[0];
     }
 

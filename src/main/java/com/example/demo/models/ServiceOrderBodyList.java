@@ -14,6 +14,13 @@ public class ServiceOrderBodyList<T> {
 
     private List<ServiceOrderModel<T>> serviceOrders;
 
+    List<String> barcodesToUpdateInProtokol;
 
+    public List<String> getBarcodesToUpdateInProtokol() {
+        return barcodesToUpdateInProtokol;
+    }
 
+    public void setBarcodesToUpdateInProtokol(List<String> barcodesToUpdateInProtokol) {
+        this.barcodesToUpdateInProtokol = barcodesToUpdateInProtokol;
+    }
 }
