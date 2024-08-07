@@ -3,7 +3,7 @@ package com.example.demo.controllers.office;
 
 import com.example.demo.callbacks.PreparedStatementCallback;
 import com.example.demo.callbacks.ResultSetCallback;
-import com.example.demo.models.ProtokolModels;
+import com.example.demo.models.ProtokolModel;
 import com.example.demo.models.ServiceOrderBodyList;
 import com.example.demo.models.ServiceOrderModel;
 import com.example.demo.services.RepoService;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 @RestController
 public class ServiceOrderController<T> {
@@ -72,7 +71,7 @@ public class ServiceOrderController<T> {
     @GetMapping("/protokol_info_barcode")
     public @ResponseBody T getProtokolInfoByBarcode(@RequestParam(value = "barcode", required = false) String barcode,
                                                     @RequestParam(value = "serial_number", required = false) String serialNumber) throws SQLException {
-        ProtokolModels<T> protokolModel = new ProtokolModels<>();
+        ProtokolModel protokolModel = new ProtokolModel();
         String command;
         if(barcode != null) {
             command = "select client, type, wheight, "

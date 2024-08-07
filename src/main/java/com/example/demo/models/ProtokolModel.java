@@ -1,6 +1,6 @@
 package com.example.demo.models;
 
-public class ProtokolModels<T> {
+public class ProtokolModel {
     private String client;
     private String type;
     private String wheight;

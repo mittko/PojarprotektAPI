@@ -88,7 +88,7 @@ public class ReportsController<T> {
         ArrayList<T> protokolReportList = new ArrayList<>();
 
         String command = "select client, type, wheight, barcod, serial, category, brand, " +
-                "T_O, P, HI, parts, value, number, person, date, kontragent," +
+                "T_O, P, HI, parts, value, number,  person, date, kontragent, " +
                 "invoiceByKontragent, additional_data, uptodate from ProtokolTableDB5";
 
         command += constructQueryWithPrams(client,number,type,wheight,category,brand,doing,
@@ -97,28 +97,28 @@ public class ReportsController<T> {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                while (resultSet.next()) {
-                   ProtokolModels<T> protokolModels = new ProtokolModels<T>();
-                   protokolModels.setClient(resultSet.getString(1));
-                   protokolModels.setType(resultSet.getString(2));
-                   protokolModels.setWheight(resultSet.getString(3));
-                   protokolModels.setBarcod(resultSet.getString(4));
-                   protokolModels.setSerial(resultSet.getString(5));
-                   protokolModels.setCategory(resultSet.getString(6));
-                   protokolModels.setBrand(resultSet.getString(7));
-                   protokolModels.setT_O(resultSet.getString(8));
-                   protokolModels.setP(resultSet.getString(9));
-                   protokolModels.setHI(resultSet.getString(10));
-                   protokolModels.setParts(resultSet.getString(11));
-                   protokolModels.setValue(resultSet.getString(12));
-                   protokolModels.setNumber(resultSet.getString(13));
-                   protokolModels.setPerson(resultSet.getString(14));
-                   protokolModels.setDate(resultSet.getString(15));
-                   protokolModels.setKontragent(resultSet.getString(16));
-                   protokolModels.setInvoiceByKontragent(resultSet.getString(17));
-                   protokolModels.setAdditional_data(resultSet.getString(18));
-                   protokolModels.setUptodate(resultSet.getString(19));
+                   ProtokolModel protokolModel = new ProtokolModel();
+                   protokolModel.setClient(resultSet.getString(1));
+                   protokolModel.setType(resultSet.getString(2));
+                   protokolModel.setWheight(resultSet.getString(3));
+                   protokolModel.setBarcod(resultSet.getString(4));
+                   protokolModel.setSerial(resultSet.getString(5));
+                   protokolModel.setCategory(resultSet.getString(6));
+                   protokolModel.setBrand(resultSet.getString(7));
+                   protokolModel.setT_O(resultSet.getString(8));
+                   protokolModel.setP(resultSet.getString(9));
+                   protokolModel.setHI(resultSet.getString(10));
+                   protokolModel.setParts(resultSet.getString(11));
+                   protokolModel.setValue(resultSet.getString(12));
+                   protokolModel.setNumber(resultSet.getString(13));
+                   protokolModel.setPerson(resultSet.getString(14));
+                   protokolModel.setDate("01.06.2016");//(resultSet.getString(15));
+                   protokolModel.setKontragent(resultSet.getString(16));
+                   protokolModel.setInvoiceByKontragent(resultSet.getString(17));
+                   protokolModel.setAdditional_data(resultSet.getString(18));
+                   protokolModel.setUptodate(resultSet.getString(19));
 
-                   protokolReportList.add((T) protokolModels);
+                   protokolReportList.add((T) protokolModel);
                }
             }
         });
