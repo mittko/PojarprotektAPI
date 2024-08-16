@@ -150,20 +150,20 @@ public class ReportsController<T> {
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
 
-                    BrakReports brakReports = new BrakReports();
-                    brakReports.setClient(resultSet.getString(1));
-                    brakReports.setType(resultSet.getString(2));
-                    brakReports.setWheight(resultSet.getString(3));
-                    brakReports.setBrand(resultSet.getString(4));
-                    brakReports.setCategory(resultSet.getString(5));
-                    brakReports.setReasons(resultSet.getString(6));
-                    brakReports.setBarcod(resultSet.getString(7));
-                    brakReports.setSerial(resultSet.getString(8));
-                    brakReports.setNumber(resultSet.getString(9));
-                    brakReports.setTehnik(resultSet.getString(10));
-                    brakReports.setDate(resultSet.getString(11));
+                    BrackModel brackModel = new BrackModel();
+                    brackModel.setClient(resultSet.getString(1));
+                    brackModel.setType(resultSet.getString(2));
+                    brackModel.setWheight(resultSet.getString(3));
+                    brackModel.setBrand(resultSet.getString(4));
+                    brackModel.setCategory(resultSet.getString(5));
+                    brackModel.setReasons(resultSet.getString(6));
+                    brackModel.setBarcod(resultSet.getString(7));
+                    brackModel.setSerial(resultSet.getString(8));
+                    brackModel.setNumber(resultSet.getString(9));
+                    brackModel.setTehnik(resultSet.getString(10));
+                    brackModel.setDate(resultSet.getString(11));
 
-                    brackList.add((T) brakReports);
+                    brackList.add((T) brackModel);
                 }
             }
         });

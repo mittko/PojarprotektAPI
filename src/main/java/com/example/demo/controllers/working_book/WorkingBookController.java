@@ -2,10 +2,7 @@ package com.example.demo.controllers.working_book;
 
 import com.example.demo.callbacks.PreparedStatementCallback;
 import com.example.demo.callbacks.ResultSetCallback;
-import com.example.demo.models.PartsModel;
-import com.example.demo.models.ProtokolModel;
-import com.example.demo.models.ProtokolModelBodyList;
-import com.example.demo.models.ServiceOrderModel;
+import com.example.demo.models.*;
 import com.example.demo.services.RepoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +17,9 @@ public class WorkingBookController<T> {
 
     @Autowired
     RepoService<T> service;
+
+
+
 
     @GetMapping("/service_order_by_barcode")
     public @ResponseBody T getServiceOrderInfoByBarcode(@RequestParam(value = "barcode",required = false) String barcode,
@@ -64,6 +64,45 @@ public class WorkingBookController<T> {
         return (T) serviceOrderModel;
     }
 
+    @PostMapping("/insert_brack")
+    public String insertBrack(@RequestBody BrackModels body) throws SQLException {
+        String command = "select max(integer(number)) from BrackTableDB2";
+        final int[] maxNumber = new int[1];
+        service.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+                    maxNumber[0] = resultSet.getInt(1);
+                    break;
+                }
+            }
+        });
+
+        String nextBrackNumber  = String.format("%07d",maxNumber[0]+1);
+
+        for(BrackModel model : body.getList()) {
+
+            command = "insert into BrackTableDB2 values ('" + model.getClient() + "','" + model.getType() + "','"
+                    + model.getWheight() + "','" + model.getBarcod() + "','" + model.getSerial() + "','"
+                    + model.getCategory() + "','" + model.getBrand() + "','"
+                    + model.getReasons() + "','" + nextBrackNumber + "','" +
+                    model.getTehnik() + "','" + model.getDate() + "')";
+
+            service.execute(command);
+
+            command = "delete from ServiceTableDB where barcod = '" + model.getBarcod() + "'";
+
+            service.execute(command);
+
+            command = "delete from ProtokolTableDB5 where barcod = '" + model.getBarcod() + "'";
+
+            service.execute(command);
+
+        }
+
+
+        return nextBrackNumber;
+    }
     @PostMapping(path = "/insert_protokol")
     public String insertProtokol(@RequestBody ProtokolModelBodyList body) throws SQLException {
 
@@ -78,7 +117,7 @@ public class WorkingBookController<T> {
                   }
             }
         });
-        String nextProtokolNumber = String.valueOf(maxNumber[0]+1);
+        String nextProtokolNumber = String.format("%07d",maxNumber[0]+1);
 
         for(ProtokolModel protokolModel : body.getList()) {
             command = "insert into ProtokolTableDB5" +

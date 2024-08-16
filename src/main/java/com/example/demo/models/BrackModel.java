@@ -1,6 +1,6 @@
 package com.example.demo.models;
 
-public class BrakReports {
+public class BrackModel {
 
     private String client;
     private String type;
