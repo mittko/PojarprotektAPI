@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 public class WorkingBookController<T> {
@@ -153,5 +155,34 @@ public class WorkingBookController<T> {
            });
         }
         return nextProtokolNumber;
+    }
+
+    @GetMapping("/protokol_info")
+    public @ResponseBody List<T> getProtokolInfo(@RequestParam("number") String number) throws SQLException {
+        String command = "select T_O, P, HI, client, type, wheight, category, parts, value, kontragent, invoiceByKontragent  "
+                + "from ProtokolTableDB5 where number = '" + number + "'";
+        List<T> models = new ArrayList<>();
+        service.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+                    ProtokolModel model = new ProtokolModel();
+                    model.setT_O(resultSet.getString(1));
+                    model.setP(resultSet.getString(2));
+                    model.setHI(resultSet.getString(3));
+                    model.setClient(resultSet.getString(4));
+                    model.setType(resultSet.getString(5));
+                    model.setWheight(resultSet.getString(6));
+                    model.setCategory(resultSet.getString(7));
+                    model.setParts(resultSet.getString(8));
+                    model.setValue(String.valueOf(resultSet.getDouble(9)));
+                    model.setKontragent(resultSet.getString(10));
+                    model.setInvoiceByKontragent(resultSet.getString(11));
+
+                    models.add((T) model);
+                }
+            }
+        });
+        return models;
     }
 }
