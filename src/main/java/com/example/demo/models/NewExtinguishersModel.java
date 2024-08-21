@@ -1,6 +1,6 @@
 package com.example.demo.models;
 
-public class NewExtinguishersReports {
+public class NewExtinguishersModel {
 
     public String getType() {
         return type;

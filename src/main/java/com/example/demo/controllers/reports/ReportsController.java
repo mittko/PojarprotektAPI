@@ -216,22 +216,22 @@ public class ReportsController<T> {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-                    AcquittanceReports acquittanceReports = new AcquittanceReports();
+                    AcquittanceModel acquittanceModel = new AcquittanceModel();
 
-                    acquittanceReports.setId(resultSet.getString(1));
-                    acquittanceReports.setValue(resultSet.getString(2));
-                    acquittanceReports.setClient(resultSet.getString(3));
-                    acquittanceReports.setSaller(resultSet.getString(4));
-                    acquittanceReports.setDate(resultSet.getString(5));
-                    acquittanceReports.set_id(resultSet.getString(6));
-                    acquittanceReports.setArtikul(resultSet.getString(7));
-                    acquittanceReports.setMed(resultSet.getString(8));
-                    acquittanceReports.setQuantity(resultSet.getString(9));
-                    acquittanceReports.setPrice(resultSet.getString(10));
-                    acquittanceReports.set_value(resultSet.getString(11));
-                    acquittanceReports.set_client(resultSet.getString(12));
+                    acquittanceModel.setId(resultSet.getString(1));
+                    acquittanceModel.setValue(resultSet.getString(2));
+                    acquittanceModel.setClient(resultSet.getString(3));
+                    acquittanceModel.setSaller(resultSet.getString(4));
+                    acquittanceModel.setDate(resultSet.getString(5));
+                    acquittanceModel.set_id(resultSet.getString(6));
+                    acquittanceModel.setArtikul(resultSet.getString(7));
+                    acquittanceModel.setMed(resultSet.getString(8));
+                    acquittanceModel.setQuantity(resultSet.getString(9));
+                    acquittanceModel.setPrice(resultSet.getString(10));
+                    acquittanceModel.set_value(resultSet.getString(11));
+                    acquittanceModel.set_client(resultSet.getString(12));
 
-                    acquittanceList.add((T) acquittanceReports);
+                    acquittanceList.add((T) acquittanceModel);
                 }
             }
         });
@@ -255,28 +255,28 @@ public class ReportsController<T> {
             public void result(ResultSet resultSet) throws SQLException {
 
                 while (resultSet.next()) {
-                    InvoiceReports invoiceReports = new InvoiceReports();
+                    InvoiceModel invoiceModel = new InvoiceModel();
 
-                    invoiceReports.setId(resultSet.getString(1));
-                    invoiceReports.setPayment(resultSet.getString(2));
-                    invoiceReports.setDiscount(resultSet.getString(3));
-                    invoiceReports.setValue(resultSet.getString(4));
-                    invoiceReports.setClient(resultSet.getString(5));
-                    invoiceReports.setSaller(resultSet.getString(6));
-                    invoiceReports.setDate(resultSet.getString(7));
-                    invoiceReports.setProtokol(resultSet.getString(8));
+                    invoiceModel.setId(resultSet.getString(1));
+                    invoiceModel.setPayment(resultSet.getString(2));
+                    invoiceModel.setDiscount(resultSet.getString(3));
+                    invoiceModel.setValue(resultSet.getString(4));
+                    invoiceModel.setClient(resultSet.getString(5));
+                    invoiceModel.setSaller(resultSet.getString(6));
+                    invoiceModel.setDate(resultSet.getString(7));
+                    invoiceModel.setProtokol(resultSet.getString(8));
 
-                    invoiceReports.set_id(resultSet.getString(9));
-                    invoiceReports.setMake(resultSet.getString(10));
-                    invoiceReports.setMed(resultSet.getString(11));
-                    invoiceReports.setQuantity(resultSet.getString(12));
-                    invoiceReports.setPrice(resultSet.getString(13));
-                    invoiceReports.set_value(resultSet.getString(14));
-                    invoiceReports.set_client(resultSet.getString(15));
-                    invoiceReports.setKontragent(resultSet.getString(16));
-                    invoiceReports.setInvoiceByKontragent(resultSet.getString(17));
+                    invoiceModel.set_id(resultSet.getString(9));
+                    invoiceModel.setMake(resultSet.getString(10));
+                    invoiceModel.setMed(resultSet.getString(11));
+                    invoiceModel.setQuantity(resultSet.getString(12));
+                    invoiceModel.setPrice(resultSet.getString(13));
+                    invoiceModel.set_value(resultSet.getString(14));
+                    invoiceModel.set_client(resultSet.getString(15));
+                    invoiceModel.setKontragent(resultSet.getString(16));
+                    invoiceModel.setInvoiceByKontragent(resultSet.getString(17));
 
-                    invoices.add((T) invoiceReports);
+                    invoices.add((T) invoiceModel);
                 }
             }
         });
@@ -306,7 +306,7 @@ public class ReportsController<T> {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-                    NewExtinguishersReports extinguishersReports = new NewExtinguishersReports();
+                    NewExtinguishersModel extinguishersReports = new NewExtinguishersModel();
                     extinguishersReports.setType(resultSet.getString(1));
                     newExtinguishers.add((T) extinguishersReports);
                 }
@@ -323,7 +323,7 @@ public class ReportsController<T> {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-                    ClientReports clientReport = new ClientReports();
+                    ClientModel clientReport = new ClientModel();
                     clientReport.setName(resultSet.getString(1));
                     clientReport.setIncorrectPerson(resultSet.getString(2));
 
@@ -337,11 +337,11 @@ public class ReportsController<T> {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-                    ClientReports clientReports = new ClientReports();
-                    clientReports.setName(resultSet.getString(1));
-                    clientReports.setIncorrectPerson(resultSet.getString(2));
+                    ClientModel clientModel = new ClientModel();
+                    clientModel.setName(resultSet.getString(1));
+                    clientModel.setIncorrectPerson(resultSet.getString(2));
 
-                    clients.add((T) clientReports);
+                    clients.add((T) clientModel);
                 }
             }
         });
@@ -437,7 +437,7 @@ public class ReportsController<T> {
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
 
-                    CreditNoteReports creditNote = new CreditNoteReports();
+                    CreditNoteModel creditNote = new CreditNoteModel();
                     creditNote.setId(resultSet.getString(1));
                     creditNote.setPayment(resultSet.getString(2));
                     creditNote.setDiscount(resultSet.getString(3));

@@ -1,6 +1,6 @@
 package com.example.demo.models;
 
-public class DeliveryReports {
+public class DeliveryModel {
     private String artikul;
     private String quantity;
     private String med;

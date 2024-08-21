@@ -1,6 +1,6 @@
 package com.example.demo.models;
 
-public class ClientReports {
+public class ClientModel {
     private String name;
     private String incorrectPerson;
 

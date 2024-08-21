@@ -1,63 +1,19 @@
 package com.example.demo.models;
 
-public class InvoiceReports {
+public class AcquittanceModel {
 
     private String id;
-    private String payment;
-    private String discount;
     private String value;
     private String client;
     private String saller;
     private String date;
-
-    private String invoiceByKontragent;
-    private String kontragent;
-    private String med;
-    private String protokol;
     private String _id;
-    private String make;
+    private String artikul;
+    private String med;
     private String quantity;
     private String price;
     private String _value;
     private String _client;
-
-    private String artikul;
-
-    public String getArtikul() {
-        return artikul;
-    }
-
-    public void setArtikul(String artikul) {
-        this.artikul = artikul;
-    }
-
-    public String getProtokol() {
-        return protokol;
-    }
-
-    public void setProtokol(String protokol) {
-        this.protokol = protokol;
-    }
-
-
-
-    public String getKontragent() {
-        return kontragent;
-    }
-
-    public void setKontragent(String kontragent) {
-        this.kontragent = kontragent;
-    }
-
-    public String getInvoiceByKontragent() {
-        return invoiceByKontragent;
-    }
-
-    public void setInvoiceByKontragent(String invoiceByKontragent) {
-        this.invoiceByKontragent = invoiceByKontragent;
-    }
-
-
 
     public String getId() {
         return id;
@@ -65,22 +21,6 @@ public class InvoiceReports {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getPayment() {
-        return payment;
-    }
-
-    public void setPayment(String payment) {
-        this.payment = payment;
-    }
-
-    public String getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(String discount) {
-        this.discount = discount;
     }
 
     public String getValue() {
@@ -123,12 +63,12 @@ public class InvoiceReports {
         this._id = _id;
     }
 
-    public String getMake() {
-        return make;
+    public String getArtikul() {
+        return artikul;
     }
 
-    public void setMake(String make) {
-        this.make = make;
+    public void setArtikul(String artikul) {
+        this.artikul = artikul;
     }
 
     public String getMed() {
@@ -170,4 +110,7 @@ public class InvoiceReports {
     public void set_client(String _client) {
         this._client = _client;
     }
+
+
+
 }

@@ -1,6 +1,6 @@
 package com.example.demo.models;
 
-public class CreditNoteReports {
+public class CreditNoteModel {
 
     private String id;
     private String payment;

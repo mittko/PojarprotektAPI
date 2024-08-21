@@ -1,8 +1,8 @@
 package com.example.demo.controllers.reports.availabality;
 
 import com.example.demo.callbacks.ResultSetCallback;
-import com.example.demo.models.DeliveryReports;
-import com.example.demo.models.InvoiceReports;
+import com.example.demo.models.DeliveryModel;
+import com.example.demo.models.InvoiceModel;
 import com.example.demo.services.RepoService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,18 +58,18 @@ public class ArtikulAvailabilityReports<T> {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-                    DeliveryReports deliveryReports = new DeliveryReports();
+                    DeliveryModel deliveryModel = new DeliveryModel();
 
-                    deliveryReports.setArtikul(resultSet.getString(1));
-                    deliveryReports.setQuantity(resultSet.getString(2));
-                    deliveryReports.setMed(resultSet.getString(3));
-                    deliveryReports.setValue(resultSet.getString(4));
-                    deliveryReports.setKontragent(resultSet.getString(5));
-                    deliveryReports.setInvoiceByKontragent(resultSet.getString(6));
-                    deliveryReports.setDate(resultSet.getString(7));
-                    deliveryReports.setOperator(resultSet.getString(8));
+                    deliveryModel.setArtikul(resultSet.getString(1));
+                    deliveryModel.setQuantity(resultSet.getString(2));
+                    deliveryModel.setMed(resultSet.getString(3));
+                    deliveryModel.setValue(resultSet.getString(4));
+                    deliveryModel.setKontragent(resultSet.getString(5));
+                    deliveryModel.setInvoiceByKontragent(resultSet.getString(6));
+                    deliveryModel.setDate(resultSet.getString(7));
+                    deliveryModel.setOperator(resultSet.getString(8));
 
-                    deliveries.add((T) deliveryReports);
+                    deliveries.add((T) deliveryModel);
                 }
             }
         });
@@ -98,7 +98,7 @@ public class ArtikulAvailabilityReports<T> {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-                    InvoiceReports invoiceDataForSalesReports = new InvoiceReports();
+                    InvoiceModel invoiceDataForSalesReports = new InvoiceModel();
 
                     invoiceDataForSalesReports.setId(resultSet.getString(1));
                     invoiceDataForSalesReports.setClient(resultSet.getString(2));
@@ -136,7 +136,7 @@ public class ArtikulAvailabilityReports<T> {
             public void result(ResultSet resultSet) throws SQLException {
                   while (resultSet.next()) {
 
-                      DeliveryReports sale = new DeliveryReports();
+                      DeliveryModel sale = new DeliveryModel();
                       sale.setInvoiceByKontragent(resultSet.getString(1));
                       sale.setKontragent(resultSet.getString(2));
                       sale.setDate(resultSet.getString(3));
@@ -171,13 +171,13 @@ public class ArtikulAvailabilityReports<T> {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-                    DeliveryReports deliveryReports = new DeliveryReports();
-                    deliveryReports.setArtikul(resultSet.getString(1));
-                    deliveryReports.setQuantity(resultSet.getString(2));
-                    deliveryReports.setValue(resultSet.getString(3));
-                    deliveryReports.setDate(resultSet.getString(4));
+                    DeliveryModel deliveryModel = new DeliveryModel();
+                    deliveryModel.setArtikul(resultSet.getString(1));
+                    deliveryModel.setQuantity(resultSet.getString(2));
+                    deliveryModel.setValue(resultSet.getString(3));
+                    deliveryModel.setDate(resultSet.getString(4));
 
-                    deliveries.add((T) deliveryReports);
+                    deliveries.add((T) deliveryModel);
                 }
             }
         });
@@ -203,7 +203,7 @@ public class ArtikulAvailabilityReports<T> {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-                    InvoiceReports invoice = new InvoiceReports();
+                    InvoiceModel invoice = new InvoiceModel();
                     invoice.setArtikul(resultSet.getString(1));
                     invoice.setQuantity(resultSet.getString(2));
                     invoice.setPrice(resultSet.getString(3));
