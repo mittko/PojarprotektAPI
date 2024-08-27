@@ -3,6 +3,8 @@ package com.example.demo.controllers.invoice;
 import com.example.demo.callbacks.PreparedStatementCallback;
 import com.example.demo.callbacks.ResultSetCallback;
 import com.example.demo.controllers.working_book.ArtikulInfo;
+import com.example.demo.models.AcquittanceModel;
+import com.example.demo.models.AcquittanceModels;
 import com.example.demo.models.InvoiceModel;
 import com.example.demo.models.InvoiceModels;
 import com.example.demo.services.RepoService;
@@ -20,6 +22,51 @@ public class InvoiceController<T> {
 
     @Autowired
     RepoService<T> service;
+
+    @PostMapping("/insert_acquittance")
+    public String insertAcquittance(@RequestBody AcquittanceModels body) throws SQLException {
+        AcquittanceModel parentModel = body.getParentModel();
+
+        String command = "select max(integer(id)) from AcquittanceParentDB where length(id) = 10";
+
+        final int[] maxAcquittanceNumber = new int[1];
+        service.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+                    maxAcquittanceNumber[0] = resultSet.getInt(1);
+                    break;
+                }
+            }
+        });
+        String nextNumberAsString =  String.format("%010d",maxAcquittanceNumber[0]+1);
+
+        command = "insert into AcquittanceParentDB  values ('"
+                + nextNumberAsString + "','" + parentModel.getValue() + "','" +
+                parentModel.getClient() + "','" + parentModel.getSaller() + "','"
+                + parentModel.getDate() + "')";;
+        service.execute(command);
+
+        command = "insert into AcquittanceChildDB " +
+                " values ( ?, ?, ?, ?, ?, ?, ?)";
+
+        for(AcquittanceModel model : body.getChildModels()) {
+            service.execute(command, new PreparedStatementCallback<T>() {
+                @Override
+                public void callback(PreparedStatement ps) throws SQLException {
+                    ps.setString(1, nextNumberAsString);
+                    ps.setString(2, model.getArtikul());
+                    ps.setString(3, model.getMed());
+                    ps.setString(4, model.getQuantity());
+                    ps.setString(5, model.getPrice());
+                    ps.setString(6, model.getValue());
+                    ps.setString(7, model.getClient());
+                    ps.executeUpdate();
+                }
+            });
+        }
+        return nextNumberAsString;
+    }
 
     @PostMapping("/insert_proform")
     public String insertProform(@RequestBody InvoiceModels<T> body) throws SQLException {
