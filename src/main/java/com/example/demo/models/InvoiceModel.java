@@ -1,6 +1,6 @@
 package com.example.demo.models;
 
-public class InvoiceModel {
+public class InvoiceModel<T> {
 
     private String id;
     private String payment;

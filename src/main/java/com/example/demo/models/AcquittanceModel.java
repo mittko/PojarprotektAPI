@@ -15,6 +15,25 @@ public class AcquittanceModel {
     private String _value;
     private String _client;
 
+    private String invoiceByKontragent;
+    private String kontragent;
+
+    public String getInvoiceByKontragent() {
+        return invoiceByKontragent;
+    }
+
+    public void setInvoiceByKontragent(String invoiceByKontragent) {
+        this.invoiceByKontragent = invoiceByKontragent;
+    }
+
+    public String getKontragent() {
+        return kontragent;
+    }
+
+    public void setKontragent(String kontragent) {
+        this.kontragent = kontragent;
+    }
+
     public String getId() {
         return id;
     }

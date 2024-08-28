@@ -23,8 +23,9 @@ public class InvoiceController<T> {
     @Autowired
     RepoService<T> service;
 
-    @PostMapping("/insert_acquittance")
-    public String insertAcquittance(@RequestBody AcquittanceModels body) throws SQLException {
+    @PostMapping("/insert_acquittance/{artikulTable}")
+    public String insertAcquittance(@RequestBody AcquittanceModels body,
+                                    @PathVariable("artikulTable") String artikulTable) throws SQLException {
         AcquittanceModel parentModel = body.getParentModel();
 
         String command = "select max(integer(id)) from AcquittanceParentDB where length(id) = 10";
@@ -64,6 +65,79 @@ public class InvoiceController<T> {
                     ps.executeUpdate();
                 }
             });
+        }
+        for(AcquittanceModel model : body.getChildModels()) {
+            String invoiceByKotragent = model.getInvoiceByKontragent();
+            if(invoiceByKotragent != null) {
+                command = "select artikul, quantity, client, invoice, date from " + artikulTable
+                        + " where ( (client = "
+                        + "'"
+                        + model.getKontragent()
+                        + "')"
+                        + " and (invoice = '"
+                        + model.getInvoiceByKontragent()
+                        + "')"
+                        + " and (artikul = "
+                        + "'"
+                        + model.getArtikul()
+                        + "')"
+                        + " and (quantity > 0) )";
+
+                ArrayList<ArtikulInfo> artikulsInfo = new ArrayList<>();
+                service.getResult(command, new ResultSetCallback() {
+                    @Override
+                    public void result(ResultSet rs) throws SQLException {
+                        while (rs.next()) {
+                            ArtikulInfo art = new ArtikulInfo(rs.getString(1),
+                                    rs.getString(2), rs.getString(3), rs.getString(4),
+                                    rs.getString(5));
+                            artikulsInfo.add(art);
+                        }
+                    }
+                });
+
+                int quantityToDecease = Integer.parseInt(model.getQuantity());
+
+                for(ArtikulInfo artikulInfo : artikulsInfo) {
+                    command = "update " + artikulTable
+                            + " set quantity = (quantity - ?) where (artikul = ? and client" +
+                            " = ? and invoice = ?)";//  and (quantity > 0)
+
+                    if(quantityToDecease > artikulInfo.getQuantity()) {
+                        service.execute(command, new PreparedStatementCallback<T>() {
+                            @Override
+                            public void callback(PreparedStatement ps) throws SQLException {
+                                ps.setString(1, artikulInfo.getQuantity() + "");
+                                ps.setString(2, artikulInfo.getArtikulName());
+                                ps.setString(3, artikulInfo.getKontragent());
+                                ps.setString(4, artikulInfo.getInvoiceByKontragent());
+                                ps.executeUpdate();
+                            }
+                        });
+                        quantityToDecease -= artikulInfo.getQuantity();
+
+                    } else if(quantityToDecease <= artikulInfo.getQuantity()) {
+
+                        int finalQuantityToDecease = quantityToDecease;
+                        service.execute(command, new PreparedStatementCallback<T>() {
+                            @Override
+                            public void callback(PreparedStatement ps) throws SQLException {
+                                ps.setString(1, finalQuantityToDecease + "");
+                                ps.setString(2, artikulInfo.getArtikulName());
+                                ps.setString(3, artikulInfo.getKontragent());
+                                ps.setString(4, artikulInfo.getInvoiceByKontragent());
+                                ps.executeUpdate();
+                            }
+                        });
+
+                        quantityToDecease = 0;
+                        break;
+
+                    }
+                }
+
+
+            }
         }
         return nextNumberAsString;
     }
@@ -238,6 +312,8 @@ public class InvoiceController<T> {
 
                 return nextInvoiceNumber;
     }
+
+
 
     @GetMapping("/invoice_info")
     public @ResponseBody T getInvoiceInfo(@RequestParam("id") String id) throws SQLException {
