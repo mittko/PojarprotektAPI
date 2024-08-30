@@ -8,6 +8,21 @@ import java.util.Date;
 
 public class ExtinguisherModel implements Comparable<ExtinguisherModel> {
 
+	public ExtinguisherModel(String type, String wheight, String category, String brand, String quantity,
+							 String invoiceByKontragent, String kontragent, String  dateAsString)  {
+		this.type = type;
+		this.wheight = wheight;
+		this.category = category;
+		this.brand = brand;
+		this.quantity = quantity;
+		this.invoiceByKontragent = invoiceByKontragent;
+		this.kontragent = kontragent;
+		try {
+			this.date = sdf.parse(dateAsString);
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	public ExtinguisherModel(){}
 
 	private String type;
