@@ -1,14 +1,13 @@
 package com.example.demo.controllers.sklad;
 
+import com.example.demo.callbacks.PreparedStatementCallback;
 import com.example.demo.callbacks.ResultSetCallback;
 import com.example.demo.models.ArtikulModel;
 import com.example.demo.services.RepoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -48,5 +47,59 @@ public class ArtikulsController<T> {
             }
         });
         return artikuls;
+    }
+
+    @PostMapping(path = "/insert_artikul")
+    public int insertArtikul(@RequestBody ArtikulModel body) throws SQLException {
+
+        // insert into available (sklad)
+        String command = "insert into ArtikulsDB values ('" + body.getArtikul() + "',"
+                + body.getQuantity() + ",'" + body.getMed()
+                + "','" + body.getPrice() + "','" + body.getInvoice() + "','" + body.getKontragent() + "','"
+                + body.getDate() + "','" + body.getPerson() + "','" + body.getPercentProfit() + "','" + body.getBarcod() +  "')";
+
+        service.execute(command);
+
+        // insert into delivery
+        command = "insert into DeliveryArtikulsDB2"
+                + " values ('" + body.getArtikul() + "'," + body.getQuantity() + ",'" + body.getMed() + "','"
+                + body.getPrice() + "','" + body.getKontragent() + "','" + body.getInvoice() + "','" + body.getDate()
+                + "','" + body.getPerson() + "')";
+
+        service.execute(command);
+
+        return 1;
+    }
+
+    @DeleteMapping(path = "/delete_artikul/{artikul}/{kontragent}/{invoiceByKontragent}")
+    public int deleteArtikul(@PathVariable("artikul") String artikul, @PathVariable("kontragent") String kontragent,
+                             @PathVariable("invoiceByKontragent") String invoiceByKontragent) throws SQLException {
+
+        // delete from available (sklad)
+        String command = "delete from ArtikulsDB"
+                + " where artikul = ? and client = ? and invoice = ?";
+        service.execute(command, new PreparedStatementCallback<T>() {
+            @Override
+            public void callback(PreparedStatement ps) throws SQLException {
+                ps.setString(1, artikul);
+                ps.setString(2, kontragent);
+                ps.setString(3, invoiceByKontragent);
+                ps.executeUpdate();
+            }
+        });
+
+        // delete from delivery
+        command = "delete from DeliveryArtikulsDB2"
+                + " where artikul = ? and kontragent = ? and invoiceByKontragent = ?";
+        service.execute(command, new PreparedStatementCallback<T>() {
+            @Override
+            public void callback(PreparedStatement ps) throws SQLException {
+                ps.setString(1, artikul);
+                ps.setString(2, kontragent);
+                ps.setString(3, invoiceByKontragent);
+                ps.executeUpdate();
+            }
+        });
+        return 0;
     }
 }

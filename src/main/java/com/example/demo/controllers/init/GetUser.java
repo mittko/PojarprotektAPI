@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class GetUser<T> {
@@ -43,4 +45,31 @@ public class GetUser<T> {
           });
           return (T) user1;
     }
+
+    @GetMapping("/users")
+    public @ResponseBody List<User<T>> getUsers() throws SQLException {
+        String command = "select * from TeamDB";
+        ArrayList<User<T>> users = new ArrayList<>();
+        repoService.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet rs) throws SQLException {
+                while (rs.next()) {
+                    User<T> user = new User<T>();
+                    user.setUsser(rs.getString(1));
+                    user.setPassword(rs.getString(2));
+                    user.setService_Order(rs.getString(3));
+                    user.setWorking_Book(rs.getString(4));
+                    user.setInvoice(rs.getString(5));
+                    user.setReports(rs.getString(6));
+                    user.setNew_Ext(rs.getString(7));
+                    user.setHidden_Menu(rs.getString(8));
+                    user.setAcquittance(rs.getString(9));
+
+                    users.add(user);
+                }
+            }
+        });
+        return users;
+    }
+
 }
