@@ -102,4 +102,68 @@ public class ArtikulsController<T> {
         });
         return 0;
     }
+
+    @PutMapping("/rename_artikul/{oldName}/{newName}")
+    public int renameArtikul(@PathVariable("oldName") String oldName, @PathVariable("newName") String newName) throws SQLException {
+     String command = "update ArtikulsDB set artikul = '" // artikul
+             + newName + "' where artikul = '" + oldName + "'";
+
+     service.execute(command);
+
+     command = "update DeliveryArtikulsDB2 set artikul = '" // artikul
+                + newName + "' where artikul = '" + oldName + "'";
+
+     service.execute(command);
+
+     command = "update InvoiceChildDB7 set artikul = '" // artikul
+                + newName + "' where artikul = '" + oldName + "'";
+
+     service.execute(command);
+
+     command = "update ProformChildDB2 set make = '" // artikul
+                + newName + "' where make = '" + oldName + "'";
+
+     service.execute(command);
+
+     command = "update AcquittanceChildDB set artikul = '" // artikul
+                + newName + "' where artikul = '" + oldName + "'";
+
+     service.execute(command);
+
+     return 1;
+
+    }
+
+    @PutMapping("/edit_artikul_quantity/{artiukl}/{kontragent}/{invoiceByKontragent}/{newQuantity}")
+    public int editArtikulQuantity(@PathVariable("artiukl") String artikul, @PathVariable("kontragent") String kontragent,
+                                   @PathVariable("invoiceByKontragent") String invoiceByKontragent,
+                                   @PathVariable("newQuantity") String newQuantity) throws SQLException {
+      String command = "update ArtikulsDB"
+              + " set quantity = ? where (artikul = ? and client = ? and invoice = ?)";
+        final int[] update = new int[1];
+      service.execute(command, new PreparedStatementCallback<T>() {
+          @Override
+          public void callback(PreparedStatement ps) throws SQLException {
+              ps.setString(1, newQuantity);
+              ps.setString(2, artikul);
+              ps.setString(3, kontragent);
+              ps.setString(4, invoiceByKontragent);
+              update[0] = ps.executeUpdate();
+          }
+      });
+
+      return update[0];
+    }
+
+    @PutMapping("/edit_artikul_price/{newValue}/{percentProfit}/{artikul}/{kontragent}/{invoiceByKontragent}")
+    public int editArtikulPrice(@PathVariable("newValue") String newValue, @PathVariable("percentProfit") String percentProfit,
+                                @PathVariable("artikul") String artikul, @PathVariable("kontragent") String kontragent,
+                                @PathVariable("invoiceByKontragent") String invoiceByKontragent) throws SQLException {
+        String command = "update ArtikulsDB set value = '"
+                + newValue + "', percentProfit = '" + percentProfit
+                + "' where (artikul = '" + artikul + "' and client = '"
+                + kontragent + "' and invoice = '" + invoiceByKontragent + "')";
+
+        return service.execute(command);
+    }
 }
