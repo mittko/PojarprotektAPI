@@ -164,4 +164,80 @@ public class NewExtinguishersController<T> {
         }
         return nextProtokolNumber;
     }
+
+    @PostMapping("/create_new_extingusihser")
+    public int createNewExtinguisher(@RequestBody ExtinguisherModel body) throws SQLException {
+        String command = "insert into  NewExtinguishersDB3 values('" + body.getType() + "','"
+                + body.getWheight() + "','" + body.getCategory() + "','" + body.getBrand() + "'," + body.getQuantity()
+                + ",'" + body.getPrice() + "','" + body.getInvoiceByKontragent() + "','" + body.getKontragent() + "','"
+                + body.getDateString() + "','" + body.getSaller() + "','" + body.getPercentProfit() + "')";
+
+        service.execute(command);
+
+
+        command = "insert into DeliveryArtikulsDB2 values ('" + (body.getType() + " ( Нов ) " + body.getWheight()) + "',"
+                + body.getQuantity() + ",'"
+                + "броя" + "','" + body.getPrice() + "','" + body.getKontragent() + "','"
+                + body.getInvoiceByKontragent() + "','" + body.getDateString() + "','" + body.getSaller() + "')";
+
+        service.execute(command);
+
+        return 1;
+    }
+
+    @PutMapping("/update_extinguisher_quantity/{quantity}/{kontragent}/{invoiceByKontragent}/{type}/{weight}/{category}/{brand}")
+    public int updateExtinguisherQuantity(@PathVariable("quantity") String quantity, @PathVariable("kontragent") String kontragent,
+                                          @PathVariable("invoiceByKontragent") String invoiceByKontragent,
+                                          @PathVariable("type") String type, @PathVariable("weight") String weight,
+                                          @PathVariable("category") String category, @PathVariable("brand") String brand) throws SQLException {
+        String command = "update NewExtinguishersDB3 set quantitiy = " + "(" + quantity
+                + ")" + " where ( (client = '" + kontragent
+                + "') and (invoice = '" + invoiceByKontragent
+                + "') and (type = '" + type + "') and (wheight = '" + weight
+                + "') and (category = '" + category + "') and (brand = '"
+                + brand + "') )";
+
+        return service.execute(command);
+    }
+
+    @PutMapping(path = "/update_extinguisher_price/{price}/{percentProfit}/{type}/{weight}/{category}/{brand}/{client}/{invoice}")
+    public int updateExtinguisherPrice(@PathVariable("price") String price, @PathVariable("percentProfit") String percentProfit,
+                                       @PathVariable("type") String type, @PathVariable("weight") String weight,
+                                       @PathVariable("category") String category, @PathVariable("brand") String brand,
+                                       @PathVariable("client") String kontragent, @PathVariable("invoice") String invoiceByKontragent) throws SQLException {
+        String command = "update NewExtinguishersDB3 set price = '"
+                + price + "' , percentProfit = '" + percentProfit
+                + "' where type = '" + type + "' and wheight = '" + weight
+                + "'" + " and category = '" + category + "'" + " and brand = '"
+                + brand + "' and client = '" + kontragent + "' and invoice = '"
+                + invoiceByKontragent + "'";
+
+        return service.execute(command);
+    }
+
+    @DeleteMapping("/delete_extinguisher/{type}/{weight}/{category}/{brand}/{invoiceByKontragent}/{kontragent}")
+    public int deleteExtinguisher(@PathVariable("type") String type, @PathVariable("weight") String weight,
+                                  @PathVariable("category") String category, @PathVariable("brand") String brand,
+                                  @PathVariable("invoiceByKontragent") String invoiceByKontragent,
+                                  @PathVariable("kontragent") String kontragent) throws SQLException {
+        String command = "delete from NewExtinguishersDB3 where type like '" + type + "'" + " and wheight like '"
+                + weight + "'" + " and category like '" + category + "'"
+                + " and brand like '" + brand + "'" + " and invoice = '"
+                + invoiceByKontragent + "'" + " and client like '" + kontragent + "'" + "";
+
+        service.execute(command);
+
+        command = "delete from DeliveryArtikulsDB2 where artikul = ? and kontragent = ? and invoiceByKontragent = ?";
+        service.execute(command, new PreparedStatementCallback<T>() {
+            @Override
+            public void callback(PreparedStatement ps) throws SQLException {
+                ps.setString(1, type + " ( Нов ) " + weight);
+                ps.setString(2, kontragent);
+                ps.setString(3, invoiceByKontragent);
+                ps.executeUpdate();// stat.getUpdateCount();
+            }
+        });
+        return 1;
+    }
+
 }
