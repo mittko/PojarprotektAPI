@@ -166,4 +166,37 @@ public class ArtikulsController<T> {
 
         return service.execute(command);
     }
+
+
+    @PutMapping("/update_parts_price/{price}/{part}/{type}/{wheight}/{category}")
+    public int updatePartsPrice(@PathVariable("price") String price, @PathVariable("part") String part,
+                                @PathVariable("type") String type, @PathVariable("wheight") String wheight,
+                                @PathVariable("category") String category) throws SQLException {
+        String update = "update PartsTableDB set price = " + price  + " where " + "part = "
+                + "'" + part + "'" + " and " + "type = " + "'" + type + "'" + " and " + "wheight = "
+                + "'" + wheight + "'" + " and " + "category = " + "'" + category + "'";
+
+        return service.execute(update);
+    }
+
+
+    @GetMapping("/get_part_price")
+    public double getPartPrice(@RequestParam("part") String part, @RequestParam("type") String type,
+                               @RequestParam("category") String category, @RequestParam("weight") String weight) throws SQLException {
+        String command = "select price from PartsTableDB where part = '" + part + "'"
+                + " and type = '" + type + "'" + " and category = '" + category + "'" +
+                " and wheight = '" + weight + "'";
+
+        final double[] price = {0.0d};
+        service.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+                   price[0] = resultSet.getDouble(1);
+                   break;
+                }
+            }
+        });
+        return price[0];
+    }
 }
