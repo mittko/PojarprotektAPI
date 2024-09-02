@@ -5,10 +5,7 @@ import com.example.demo.callbacks.ResultSetCallback;
 import com.example.demo.models.User;
 import com.example.demo.services.RepoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -70,6 +67,24 @@ public class GetUser<T> {
             }
         });
         return users;
+    }
+
+    @PostMapping("/create_user")
+    public int createUser(@RequestBody User user) throws SQLException {
+        String command = "insert into TeamDB values ('" + user.getUsser()
+                + "','" + user.getPassword() + "','" + user.getService_Order() + "','"
+                + user.getWorking_Book() + "','" + user.getInvoice() + "','"
+                + user.getReports() + "','" + user.getNew_Ext() + "','"
+                + user.getHidden_Menu() +  "','" + user.getAcquittance() + "','" + "" +  "')";
+
+        return repoService.execute(command);
+    }
+
+    @DeleteMapping("/delete_user/{user}")
+    public int deleteUser(@PathVariable("user") String user) throws SQLException {
+        String command = "delete from TeamDB where usser = " + "'"
+                + user + "'";
+        return repoService.execute(command);
     }
 
 }
