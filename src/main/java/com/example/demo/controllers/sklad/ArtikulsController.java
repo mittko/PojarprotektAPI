@@ -199,4 +199,44 @@ public class ArtikulsController<T> {
         });
         return price[0];
     }
+
+    @GetMapping(path = "/artikul_value/{table}")
+    public double getArtikulValue(@PathVariable("table") String table, @RequestParam("artikul") String artikul) throws SQLException {
+        // table DeliveryArtikulsDB2 or ArtikulsDB
+        String command = "select max(double(value)) from " + table
+               + " where artikul = '" + artikul + "'";
+        final double[] maxValue = new double[1];
+       service.getResult(command, new ResultSetCallback() {
+           @Override
+           public void result(ResultSet resultSet) throws SQLException {
+               while (resultSet.next()) {
+                   maxValue[0] = resultSet.getDouble(1);
+                   break;
+               }
+           }
+       });
+       return maxValue[0];
+    }
+
+    @GetMapping("/extinguisher_value/{type}/{weight}/{category}/{brand}")
+    public double getExtinguisherValue(@PathVariable("type") String type,
+                                       @PathVariable("weight") String weight,
+                                       @PathVariable("category") String category,
+                                       @PathVariable("brand") String brand) throws SQLException {
+        String command = "select max(double(price)) from NewExtinguishersDB3"
+                + " where type = '" + type + "' and wheight =  '" + weight
+                + "' and category = '" + category + "' and brand =  '" + brand
+                + "'";
+        final double[] maxValue = new double[1];
+        service.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+                    maxValue[0] = resultSet.getDouble(1);
+                    break;
+                }
+            }
+        });
+        return maxValue[0];
+    }
 }
