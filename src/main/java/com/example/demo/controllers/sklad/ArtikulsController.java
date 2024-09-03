@@ -49,11 +49,11 @@ public class ArtikulsController<T> {
         return artikuls;
     }
 
-    @PostMapping(path = "/insert_artikul")
-    public int insertArtikul(@RequestBody ArtikulModel body) throws SQLException {
+    @PostMapping(path = "/insert_artikul/{table}")
+    public int insertArtikul(@PathVariable("table") String table, @RequestBody ArtikulModel body) throws SQLException {
 
         // insert into available (sklad)
-        String command = "insert into ArtikulsDB values ('" + body.getArtikul() + "',"
+        String command = "insert into " + table + " values ('" + body.getArtikul() + "',"
                 + body.getQuantity() + ",'" + body.getMed()
                 + "','" + body.getPrice() + "','" + body.getInvoice() + "','" + body.getKontragent() + "','"
                 + body.getDate() + "','" + body.getPerson() + "','" + body.getPercentProfit() + "','" + body.getBarcod() +  "')";
@@ -71,12 +71,13 @@ public class ArtikulsController<T> {
         return 1;
     }
 
-    @DeleteMapping(path = "/delete_artikul/{artikul}/{kontragent}/{invoiceByKontragent}")
-    public int deleteArtikul(@PathVariable("artikul") String artikul, @PathVariable("kontragent") String kontragent,
+    @DeleteMapping(path = "/delete_artikul/{table}/{artikul}/{kontragent}/{invoiceByKontragent}")
+    public int deleteArtikul(@PathVariable("table") String table,@PathVariable("artikul") String artikul,
+                             @PathVariable("kontragent") String kontragent,
                              @PathVariable("invoiceByKontragent") String invoiceByKontragent) throws SQLException {
 
         // delete from available (sklad)
-        String command = "delete from ArtikulsDB"
+        String command = "delete from " + table
                 + " where artikul = ? and client = ? and invoice = ?";
         service.execute(command, new PreparedStatementCallback<T>() {
             @Override
@@ -103,9 +104,9 @@ public class ArtikulsController<T> {
         return 0;
     }
 
-    @PutMapping("/rename_artikul/{oldName}/{newName}")
-    public int renameArtikul(@PathVariable("oldName") String oldName, @PathVariable("newName") String newName) throws SQLException {
-     String command = "update ArtikulsDB set artikul = '" // artikul
+    @PutMapping("/rename_artikul/{table}/{oldName}/{newName}")
+    public int renameArtikul(@PathVariable("table") String table, @PathVariable("oldName") String oldName, @PathVariable("newName") String newName) throws SQLException {
+     String command = "update " + table + " set artikul = '" // artikul
              + newName + "' where artikul = '" + oldName + "'";
 
      service.execute(command);
@@ -134,11 +135,11 @@ public class ArtikulsController<T> {
 
     }
 
-    @PutMapping("/edit_artikul_quantity/{artiukl}/{kontragent}/{invoiceByKontragent}/{newQuantity}")
-    public int editArtikulQuantity(@PathVariable("artiukl") String artikul, @PathVariable("kontragent") String kontragent,
+    @PutMapping("/edit_artikul_quantity/{table}/{artiukl}/{kontragent}/{invoiceByKontragent}/{newQuantity}")
+    public int editArtikulQuantity(@PathVariable("table") String table,@PathVariable("artiukl") String artikul, @PathVariable("kontragent") String kontragent,
                                    @PathVariable("invoiceByKontragent") String invoiceByKontragent,
                                    @PathVariable("newQuantity") String newQuantity) throws SQLException {
-      String command = "update ArtikulsDB"
+      String command = "update " + table
               + " set quantity = ? where (artikul = ? and client = ? and invoice = ?)";
         final int[] update = new int[1];
       service.execute(command, new PreparedStatementCallback<T>() {
@@ -155,11 +156,11 @@ public class ArtikulsController<T> {
       return update[0];
     }
 
-    @PutMapping("/edit_artikul_price/{newValue}/{percentProfit}/{artikul}/{kontragent}/{invoiceByKontragent}")
-    public int editArtikulPrice(@PathVariable("newValue") String newValue, @PathVariable("percentProfit") String percentProfit,
+    @PutMapping("/edit_artikul_price/{table}/{newValue}/{percentProfit}/{artikul}/{kontragent}/{invoiceByKontragent}")
+    public int editArtikulPrice(@PathVariable("table") String table, @PathVariable("newValue") String newValue, @PathVariable("percentProfit") String percentProfit,
                                 @PathVariable("artikul") String artikul, @PathVariable("kontragent") String kontragent,
                                 @PathVariable("invoiceByKontragent") String invoiceByKontragent) throws SQLException {
-        String command = "update ArtikulsDB set value = '"
+        String command = "update " + table + " set value = '"
                 + newValue + "', percentProfit = '" + percentProfit
                 + "' where (artikul = '" + artikul + "' and client = '"
                 + kontragent + "' and invoice = '" + invoiceByKontragent + "')";
