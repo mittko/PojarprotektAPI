@@ -29,7 +29,7 @@ public class JwtUtil {
         claims.put("firstName",user.getUsser());
         claims.put("lastName",user.getPassword());
         Date tokenCreateTime = new Date();
-        long accessTokenValidity = 60 * 60 * 1000;
+        long accessTokenValidity = 604800000;//one week
         Date tokenValidity = new Date(System.currentTimeMillis() + accessTokenValidity);
         return Jwts.builder()
                 .setClaims(claims)

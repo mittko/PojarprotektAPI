@@ -1,22 +1,26 @@
 package com.example.demo.security;
 
+import com.example.demo.models.User;
+
+import javax.swing.plaf.PanelUI;
+
 public class LoginRes {
-    private String user;
+
+    private User user;
     private String token;
 
-    public LoginRes(String user, String token) {
+    public LoginRes(User user, String token) {
         this.user = user;
         this.token = token;
     }
 
-    public String getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(String user) {
+    public void setUser(User user) {
         this.user = user;
     }
-
     public String getToken() {
         return token;
     }

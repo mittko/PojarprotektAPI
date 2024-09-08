@@ -16,10 +16,6 @@ import java.util.List;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-//    private final UserRepository userRepository;
-//    public CustomUserDetailsService(UserRepository userRepository) {
-//        this.userRepository = userRepository;
-//    }
     @Autowired
     private RepoService repoService;
 
@@ -27,7 +23,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String user) throws UsernameNotFoundException {
-       // User user = userRepository.findUserByEmail(email);
 
         com.example.demo.models.User user1 = new com.example.demo.models.User();
         try {
@@ -45,14 +40,13 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new RuntimeException(e);
         }
 
+
         List<String> roles = new ArrayList<>();
         roles.add("USER");
-        UserDetails userDetails =
-                org.springframework.security.core.userdetails.User.builder()
-                        .username(user1.getUsser())
-                        .password(user1.getPassword())
-                        .roles(roles.toArray(new String[0]))
-                        .build();
-        return userDetails;
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user1.getUsser())
+                .password(user1.getPassword())
+                .roles(roles.toArray(new String[0]))
+                .build();
     }
 }
