@@ -2,6 +2,7 @@ package com.example.demo.security;
 
 
 import com.example.demo.callbacks.ResultSetCallback;
+import com.example.demo.exceptions.ErrorBody;
 import com.example.demo.services.RepoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -69,11 +70,14 @@ public class AuthController {
             return ResponseEntity.ok(loginRes);
 
         }catch (BadCredentialsException e){
-            ErrorRes errorResponse = new ErrorRes(HttpStatus.BAD_REQUEST,"Invalid password");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+
+            ErrorBody errorBody = new ErrorBody("Невалидна Парола");
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody);
         }catch (Exception e){
-            ErrorRes errorResponse = new ErrorRes(HttpStatus.BAD_REQUEST,"Invalid username");// e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+
+            ErrorBody errorBody = new ErrorBody("Невалиден Потребител");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody);
         }
     }
 }
