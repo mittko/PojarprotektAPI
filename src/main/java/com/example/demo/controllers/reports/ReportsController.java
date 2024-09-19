@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 @RestController
@@ -71,6 +72,99 @@ public class ReportsController<T> {
     }
 
 
+    @GetMapping(path = "/diary")
+    public @ResponseBody T getDiaryInfo(@RequestParam("fromDate") String fromDate,
+                                                   @RequestParam("toDate") String toDate) throws SQLException {
+        ArrayList<T> data = new ArrayList<>();
+        String command = "select * from ProtokolTableDB5" +
+                " where date between Date('"+fromDate+"') and Date('"
+                +toDate+"') order by number";
+        repoService.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+                    ProtokolModel protokolModel = new ProtokolModel();
+                    protokolModel.setClient(resultSet.getString(1));
+                    protokolModel.setType(resultSet.getString(2));
+                    protokolModel.setWheight(resultSet.getString(3));
+                    protokolModel.setBarcod(resultSet.getString(4));
+                    protokolModel.setSerial(resultSet.getString(5));
+                    protokolModel.setCategory(resultSet.getString(6));
+                    protokolModel.setBrand(resultSet.getString(7));
+                    protokolModel.setT_O(resultSet.getString(8));
+                    protokolModel.setP(resultSet.getString(9));
+                    protokolModel.setHI(resultSet.getString(10));
+                    protokolModel.setParts(resultSet.getString(11));
+                    protokolModel.setValue(resultSet.getString(12));
+                    protokolModel.setNumber(resultSet.getString(13));
+                    protokolModel.setPerson(resultSet.getString(14));
+                    protokolModel.setDate("01.06.2016");//(resultSet.getString(15));
+                    protokolModel.setKontragent(resultSet.getString(16));
+                    protokolModel.setInvoiceByKontragent(resultSet.getString(17));
+                    protokolModel.setAdditional_data(resultSet.getString(18));
+                    protokolModel.setUptodate(resultSet.getString(19));
+
+                    data.add((T) protokolModel);
+                }
+            }
+        });
+
+
+        // get invoice numbers accordingly protokol numbers
+        HashMap<String, String> hashMap = new HashMap<String, String>();
+        for(T t : data) {
+           ProtokolModel model = (ProtokolModel) t;
+            command = "select id, date from InvoiceParentDB5"
+                    + " where protokol = '" + model.getNumber() + "'";
+            repoService.getResult(command, new ResultSetCallback() {
+                @Override
+                public void result(ResultSet resultSet) throws SQLException {
+                    while (resultSet.next()) {
+                        hashMap.put(model.getNumber(),
+                                resultSet.getString(1) + " /" + resultSet.getString(2) + "/");
+                    }
+                }
+            });
+        }
+
+        // get client info
+        HashMap<String,ClientInfo> clientModelHashMap = new HashMap<>();
+        for(T t : data) {
+            ProtokolModel model = (ProtokolModel) t;
+
+            command = "select city, telPerson from FirmsTable"
+                    + " where firm = '" + model.getClient() + "'";
+            repoService.getResult(command, new ResultSetCallback() {
+                @Override
+                public void result(ResultSet resultSet) throws SQLException {
+                    while (resultSet.next()) {
+                        ClientInfo clientInfo = new ClientInfo();
+                        clientInfo.setCity(resultSet.getString(1));
+                        clientInfo.setTel(resultSet.getString(2));
+                      clientModelHashMap.put(model.getClient(), clientInfo);
+                    }
+                }
+            });
+            command = "select tel from PersonsTable"
+                    + " where name = '" + model.getClient() + "'";
+            repoService.getResult(command, new ResultSetCallback() {
+                @Override
+                public void result(ResultSet resultSet) throws SQLException {
+                    while (resultSet.next()) {
+                        ClientInfo clientInfo = new ClientInfo();
+                        clientInfo.setCity("");
+                        clientInfo.setTel(resultSet.getString(1));
+                        clientModelHashMap.put(model.getClient(), clientInfo);
+                    }
+                }
+            });
+        }
+        DiaryModel<T> diaryModel = new DiaryModel<T>();
+        diaryModel.setProtokolModels((ArrayList<ProtokolModel>) data);
+        diaryModel.setInvoiceNumbers(hashMap);
+        diaryModel.setClientModelHashMap(clientModelHashMap);
+        return (T) diaryModel;
+    }
     @GetMapping(path = "/protokols")
     public @ResponseBody ArrayList<T> getProtokols(
             @RequestParam(value = "client",required = false) String client,
