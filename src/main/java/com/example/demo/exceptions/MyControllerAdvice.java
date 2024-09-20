@@ -70,7 +70,7 @@ public class MyControllerAdvice {
 
 
 
-    @ExceptionHandler( {SQLException.class, DublicateNumberException.class} )
+    @ExceptionHandler( {SQLException.class, DublicateNumberException.class, NotFoundException.class} )
     public ResponseEntity<HashMap<String,String>> handleException(final Exception exception,
                                                               final HttpServletRequest request) {
         exception.printStackTrace();
@@ -86,8 +86,12 @@ public class MyControllerAdvice {
             }
         }
         if(exception instanceof DublicateNumberException) {
-            msg.put("error code",String.valueOf((((DublicateNumberException)exception).getErrorCode())));
+            msg.put("error code",String.valueOf(((DublicateNumberException)exception).getErrorCode()));
             return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
+        }
+        if(exception instanceof NotFoundException) {
+            msg.put("error code", String.valueOf(((NotFoundException)exception).getErrorCode()));
+            return new ResponseEntity<>(msg,HttpStatus.NOT_FOUND);
         }
 
 

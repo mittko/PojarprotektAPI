@@ -3,6 +3,7 @@ package com.example.demo.controllers.office;
 
 import com.example.demo.callbacks.PreparedStatementCallback;
 import com.example.demo.callbacks.ResultSetCallback;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.ProtokolModel;
 import com.example.demo.models.ServiceOrderBodyList;
 import com.example.demo.models.ServiceOrderModel;
@@ -70,7 +71,7 @@ public class ServiceOrderController<T> {
 
     @GetMapping("/protokol_info_barcode")
     public @ResponseBody T getProtokolInfoByBarcode(@RequestParam(value = "barcode", required = false) String barcode,
-                                                    @RequestParam(value = "serial_number", required = false) String serialNumber) throws SQLException {
+                                                    @RequestParam(value = "serial_number", required = false) String serialNumber) throws SQLException, NotFoundException {
         ProtokolModel protokolModel = new ProtokolModel();
         String command;
         if(barcode != null) {
@@ -83,12 +84,14 @@ public class ServiceOrderController<T> {
                     " where serial = '" + serialNumber + "'";
         }
 
+        final boolean[] found = {false};
 
         service.getResult(command, new ResultSetCallback() {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
 
+                    found[0] = true;
                     protokolModel.setClient(resultSet.getString(1));
                     protokolModel.setType(resultSet.getString(2));
                     protokolModel.setWheight(resultSet.getString(3));
@@ -104,6 +107,9 @@ public class ServiceOrderController<T> {
                 }
             }
         });
+        if(!found[0]) {
+            throw new NotFoundException("Не е намерен такъв елемент");
+        }
         return (T) protokolModel;
     }
 
