@@ -2,6 +2,7 @@ package com.example.demo.controllers.working_book;
 
 import com.example.demo.callbacks.PreparedStatementCallback;
 import com.example.demo.callbacks.ResultSetCallback;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.*;
 import com.example.demo.services.RepoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class WorkingBookController<T> {
 
     @GetMapping("/service_order_by_barcode")
     public @ResponseBody T getServiceOrderInfoByBarcode(@RequestParam(value = "barcode",required = false) String barcode,
-                                                        @RequestParam(value = "serial_number",required = false) String serialNumber) throws SQLException {
+                                                        @RequestParam(value = "serial_number",required = false) String serialNumber) throws SQLException, NotFoundException {
 
         String command = "";
         if(barcode != null) {
@@ -42,28 +43,33 @@ public class WorkingBookController<T> {
                     + " from ServiceTableDB where serial = '" + serialNumber + "' and done = 'не'";
         }
 
-        ServiceOrderModel<T> serviceOrderModel = new ServiceOrderModel<>();
+        final ServiceOrderModel<T>[] serviceOrderModel = new ServiceOrderModel[1];
+        final boolean[] found = {false};
         service.getResult(command, new ResultSetCallback() {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-
-                    serviceOrderModel.setClient(resultSet.getString(1));
-                    serviceOrderModel.setType(resultSet.getString(2));
-                    serviceOrderModel.setWheight(resultSet.getString(3));
-                    serviceOrderModel.setBarcod(resultSet.getString(4));
-                    serviceOrderModel.setSerial(resultSet.getString(5));
-                    serviceOrderModel.setCategory(resultSet.getString(6));
-                    serviceOrderModel.setBrand(resultSet.getString(7));
-                    serviceOrderModel.setT_O(resultSet.getString(8));
-                    serviceOrderModel.setP(resultSet.getString(9));
-                    serviceOrderModel.setHI(resultSet.getString(10));
-                    serviceOrderModel.setAdditional_data(resultSet.getString(11));
+                    found[0] = true;
+                    serviceOrderModel[0] = new ServiceOrderModel<>();
+                    serviceOrderModel[0].setClient(resultSet.getString(1));
+                    serviceOrderModel[0].setType(resultSet.getString(2));
+                    serviceOrderModel[0].setWheight(resultSet.getString(3));
+                    serviceOrderModel[0].setBarcod(resultSet.getString(4));
+                    serviceOrderModel[0].setSerial(resultSet.getString(5));
+                    serviceOrderModel[0].setCategory(resultSet.getString(6));
+                    serviceOrderModel[0].setBrand(resultSet.getString(7));
+                    serviceOrderModel[0].setT_O(resultSet.getString(8));
+                    serviceOrderModel[0].setP(resultSet.getString(9));
+                    serviceOrderModel[0].setHI(resultSet.getString(10));
+                    serviceOrderModel[0].setAdditional_data(resultSet.getString(11));
 
                 }
             }
         });
-        return (T) serviceOrderModel;
+        if(!found[0]) {
+            throw new NotFoundException("Не е намерен такъв елемент");
+        }
+        return (T) serviceOrderModel[0];
     }
 
     @PostMapping("/insert_brack")
