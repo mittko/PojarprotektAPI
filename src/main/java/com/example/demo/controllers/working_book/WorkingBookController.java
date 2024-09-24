@@ -164,9 +164,10 @@ public class WorkingBookController<T> {
     }
 
     @GetMapping("/protokol_info")
-    public @ResponseBody List<T> getProtokolInfo(@RequestParam("number") String number) throws SQLException {
+    public @ResponseBody ProtokolInfo getProtokolInfo(@RequestParam("number") String number) throws SQLException, NotFoundException {
         String command = "select T_O, P, HI, client, type, wheight, category, parts, value, kontragent, invoiceByKontragent  "
                 + "from ProtokolTableDB5 where number = '" + number + "'";
+        ProtokolInfo protokolInfo = new ProtokolInfo();
         List<T> models = new ArrayList<>();
         service.getResult(command, new ResultSetCallback() {
             @Override
@@ -189,6 +190,43 @@ public class WorkingBookController<T> {
                 }
             }
         });
-        return models;
+        if(models.size() > 0) {
+            String client = ((ProtokolModel)models.get(0)).getClient();
+
+            Firm<T> firm = new Firm<T>();
+            firm.setFirm(" ? ");
+            firm.setDiscount(0);
+            firm.setVat_registration("не");
+
+            service.getResult(String.format("select firm, discount, vat_registration from FirmsTable where firm = '%s'",client), new ResultSetCallback() {
+                @Override
+                public void result(ResultSet resultSet) throws SQLException {
+                    while (resultSet.next()) {
+                        firm.setFirm(resultSet.getString(1));
+                        firm.setDiscount(Integer.parseInt(resultSet.getString(2)));
+                        firm.setVat_registration(resultSet.getString(3));
+                        break;
+                    }
+                }
+            });
+
+            if(firm.getFirm() == null) {
+                service.getResult(String.format("select name, discount from PersonsTable where name = '%s'", client), new ResultSetCallback() {
+                    @Override
+                    public void result(ResultSet resultSet) throws SQLException {
+                        while (resultSet.next()) {
+                            firm.setFirm(resultSet.getString(1));
+                            firm.setDiscount(Integer.parseInt(resultSet.getString(2)));
+                        }
+                    }
+                });
+            }
+            protokolInfo.setProtokolModels((List<ProtokolModel>) models);
+            protokolInfo.setFirm(firm);
+        } else {
+            throw new NotFoundException("Не е намерен такъв протокол");
+        }
+
+        return protokolInfo;
     }
 }
