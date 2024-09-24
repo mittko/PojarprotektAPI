@@ -7,6 +7,10 @@ public class InvoiceModels<T> {
     InvoiceModel parentInvoiceModel;
     List<InvoiceModel> childInvoiceModels;
 
+    private Firm firm;
+
+
+
     public InvoiceModel getParentInvoiceModel() {
         return parentInvoiceModel;
     }
@@ -21,5 +25,13 @@ public class InvoiceModels<T> {
 
     public void setChildInvoiceModels(List<InvoiceModel> childInvoiceModels) {
         this.childInvoiceModels = childInvoiceModels;
+    }
+
+    public Firm getFirm() {
+        return firm;
+    }
+
+    public void setFirm(Firm firm) {
+        this.firm = firm;
     }
 }

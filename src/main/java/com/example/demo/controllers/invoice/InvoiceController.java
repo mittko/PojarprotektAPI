@@ -3,10 +3,8 @@ package com.example.demo.controllers.invoice;
 import com.example.demo.callbacks.PreparedStatementCallback;
 import com.example.demo.callbacks.ResultSetCallback;
 import com.example.demo.controllers.working_book.ArtikulInfo;
-import com.example.demo.models.AcquittanceModel;
-import com.example.demo.models.AcquittanceModels;
-import com.example.demo.models.InvoiceModel;
-import com.example.demo.models.InvoiceModels;
+import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.models.*;
 import com.example.demo.services.RepoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -316,10 +314,13 @@ public class InvoiceController<T> {
 
 
     @GetMapping("/invoice_info")
-    public @ResponseBody T getInvoiceInfo(@RequestParam("id") String id) throws SQLException {
+    public @ResponseBody T getInvoiceInfo(@RequestParam("id") String id) throws SQLException, NotFoundException {
         String command = "select * from ProformParentDB where id = '" + id + "'";
 
+        InvoiceModels<T> models = new InvoiceModels<>();
         InvoiceModel parentInvoiceModel = new InvoiceModel();
+        List<T> childInvoiceModels = new ArrayList<>();
+
 
         service.getResult(command, new ResultSetCallback() {
             @Override
@@ -345,7 +346,7 @@ public class InvoiceController<T> {
                 "from ProformParentDB , ProformChildDB2 where ProformParentDB.id = '"
                 + id + "' and ProformChildDB2.id = '" + id + "'";
 
-        List<T> childInvoiceModels = new ArrayList<>();
+
 
         service.getResult(command, new ResultSetCallback() {
             @Override
@@ -366,9 +367,44 @@ public class InvoiceController<T> {
             }
         });
 
-        InvoiceModels<T> models = new InvoiceModels<>();
-        models.setParentInvoiceModel( parentInvoiceModel);
-        models.setChildInvoiceModels((List<InvoiceModel>) childInvoiceModels);
+        if(childInvoiceModels.size() > 0) {
+            String client = parentInvoiceModel.getClient();
+
+            Firm<T> firm = new Firm<T>();
+            firm.setFirm(" ? ");
+            firm.setDiscount(0);
+            firm.setVat_registration("не");
+
+            service.getResult(String.format("select firm, discount, vat_registration from FirmsTable where firm = '%s'",client), new ResultSetCallback() {
+                @Override
+                public void result(ResultSet resultSet) throws SQLException {
+                    while (resultSet.next()) {
+                        firm.setFirm(resultSet.getString(1));
+                        firm.setDiscount(Integer.parseInt(resultSet.getString(2)));
+                        firm.setVat_registration(resultSet.getString(3));
+                        break;
+                    }
+                }
+            });
+
+            if(firm.getFirm() == null) {
+                service.getResult(String.format("select name, discount from PersonsTable where name = '%s'", client), new ResultSetCallback() {
+                    @Override
+                    public void result(ResultSet resultSet) throws SQLException {
+                        while (resultSet.next()) {
+                            firm.setFirm(resultSet.getString(1));
+                            firm.setDiscount(Integer.parseInt(resultSet.getString(2)));
+                        }
+                    }
+                });
+            }
+            models.setFirm(firm);
+            models.setParentInvoiceModel( parentInvoiceModel);
+            models.setChildInvoiceModels((List<InvoiceModel>) childInvoiceModels);
+        } else {
+            throw new NotFoundException("Не е намерена такава проформа");
+        }
+
         return (T) models;
     }
 
