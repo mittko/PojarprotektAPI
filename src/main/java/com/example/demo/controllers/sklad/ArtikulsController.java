@@ -205,7 +205,7 @@ public class ArtikulsController<T> {
     public double getArtikulValue(@PathVariable("table") String table, @RequestParam("artikul") String artikul) throws SQLException {
         // table DeliveryArtikulsDB2 or ArtikulsDB
         String command = "select max(double(value)) from " + table
-               + " where artikul = '" + artikul + "'";
+               + " where artikul = '" + artikul + "' and quantity > 0" ;
         final double[] maxValue = new double[1];
        service.getResult(command, new ResultSetCallback() {
            @Override
@@ -240,4 +240,6 @@ public class ArtikulsController<T> {
         });
         return maxValue[0];
     }
+
+
 }
