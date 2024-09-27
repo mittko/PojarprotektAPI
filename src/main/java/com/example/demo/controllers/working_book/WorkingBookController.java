@@ -229,4 +229,19 @@ public class WorkingBookController<T> {
 
         return protokolInfo;
     }
+
+    @GetMapping("/get_protokol_number")
+    public @ResponseBody String getProtokolNumber() throws SQLException {
+        final int[] currentNumber = {0};
+        service.getResult("select max(integer(number)) from ProtokolTableDB5 ", new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+                    currentNumber[0] = resultSet.getInt(1);
+                    break;
+                }
+            }
+        });
+        return String.format("%07d",currentNumber[0]);
+    }
 }
