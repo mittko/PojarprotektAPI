@@ -23,7 +23,7 @@ public class ServiceOrderController<T> {
 
     @PostMapping("/insert_service_order")
     public Integer insertServiceOrder(@RequestBody ServiceOrderBodyList<T> serviceOrderBodyList) throws SQLException {
-        String command = "insert into  ServiceTableDB" +
+        String command = "insert into ServiceTableDB" +
                 " (client, type, wheight, barcod, serial, category, brand, T_O, P, HI , done, number, person, date," +
                 " additional_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -134,5 +134,24 @@ public class ServiceOrderController<T> {
        service.execute(command);
 
        return nextSerialNumber[0];
+    }
+
+    @GetMapping("/next_service_order_number")
+    public @ResponseBody String getNextServiceOrderNumber() throws SQLException {
+        String command = "select integer(so) from SO_Table";
+        final int[] currentSONumber = new int[1];
+        service.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+                    currentSONumber[0] = resultSet.getInt(1);
+                    break;
+                }
+            }
+        });
+        String nextSoNumber = String.format("%010d",currentSONumber[0]+1);
+        command = "update SO_Table set so = '" + nextSoNumber + "'";
+        service.execute(command);
+        return nextSoNumber;
     }
 }
