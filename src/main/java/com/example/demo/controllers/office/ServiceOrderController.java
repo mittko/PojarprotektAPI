@@ -149,9 +149,9 @@ public class ServiceOrderController<T> {
                 }
             }
         });
-        String nextSoNumber = String.format("%010d",currentSONumber[0]+1);
+        String nextSoNumber = String.format("%09d",currentSONumber[0]+1);
         command = "update SO_Table set so = '" + nextSoNumber + "'";
         service.execute(command);
-        return nextSoNumber;
+        return 1+nextSoNumber;
     }
 }
