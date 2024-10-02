@@ -247,7 +247,7 @@ public class InvoiceController<T> {
                                   + "')"
                                   + " and (artikul = "
                                   + "'"
-                                  + model.getArtikul()
+                                  + model.getMake()
                                   + "')"
                                   + " and (quantity > 0) )";
 
@@ -303,8 +303,6 @@ public class InvoiceController<T> {
 
                             }
                         }
-
-
                       }
                 }
 

@@ -204,15 +204,23 @@ public class ArtikulsController<T> {
     @GetMapping(path = "/artikul_value/{table}")
     public double getArtikulValue(@PathVariable("table") String table, @RequestParam("artikul") String artikul) throws SQLException {
         // table DeliveryArtikulsDB2 or ArtikulsDB
-        String command = "select max(double(value)) from " + table
+        String command = "select value from " + table //max(double(value))
                + " where artikul = '" + artikul + "' and quantity > 0" ;
         final double[] maxValue = new double[1];
        service.getResult(command, new ResultSetCallback() {
            @Override
            public void result(ResultSet resultSet) throws SQLException {
                while (resultSet.next()) {
-                   maxValue[0] = resultSet.getDouble(1);
-                   break;
+                   String str = resultSet.getString(1);
+                   double d = 0;
+                   try {
+                       d = Double.parseDouble(str.replace(",", "."));
+                   } catch (Exception e) {
+                       d = 0;
+                   }
+                   if (d > maxValue[0]) {
+                       maxValue[0] = d;
+                   }
                }
            }
        });
