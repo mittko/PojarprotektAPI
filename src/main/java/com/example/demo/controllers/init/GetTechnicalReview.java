@@ -39,10 +39,13 @@ public class GetTechnicalReview<T> {
                     technicalReview.setT_O(resultSet.getString(4));
                     technicalReview.setP(resultSet.getString(5));
                     technicalReview.setHI(resultSet.getString(6));
-                    technicalReview.setNumber(resultSet.getString(7));
+
+                    String number = resultSet.getString(7);
+                    technicalReview.setNumber(number != null ? number : "-");
                     technicalReview.setAdditional_data(resultSet.getString(8));
 
                     technicalReviewList.add((T) technicalReview);
+                  //  System.out.println(technicalReview.getNumber());
                 }
             }
         });

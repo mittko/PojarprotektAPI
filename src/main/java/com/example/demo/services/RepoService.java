@@ -2,6 +2,8 @@ package com.example.demo.services;
 
 import com.example.demo.callbacks.PreparedStatementCallback;
 import com.example.demo.callbacks.ResultSetCallback;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
@@ -11,11 +13,15 @@ import static com.example.demo.db.DBManager.getEmbeddedConnection;
 @Service
 public class RepoService<T> {
 
+    @Autowired
+    JdbcTemplate template;
+
     public void getResult(String command, ResultSetCallback resultSetCallback) throws SQLException {
         try (Connection connection = getEmbeddedConnection(); Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(command);
             resultSetCallback.result(resultSet);
         }
+
     }
 
     public int execute(String command) throws SQLException {

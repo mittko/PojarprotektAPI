@@ -136,9 +136,10 @@ public class ServiceOrderController<T> {
        return nextSerialNumber[0];
     }
 
+
     @GetMapping("/next_service_order_number")
     public @ResponseBody String getNextServiceOrderNumber() throws SQLException {
-        String command = "select integer(so) from SO_Table";
+        String command = "select min(integer(so)) from SO_Table";
         final int[] currentSONumber = new int[1];
         service.getResult(command, new ResultSetCallback() {
             @Override
@@ -149,9 +150,10 @@ public class ServiceOrderController<T> {
                 }
             }
         });
+       // currentSONumber[0] = 1000024034;
         String nextSoNumber = String.format("%09d",currentSONumber[0]+1);
         command = "update SO_Table set so = '" + nextSoNumber + "'";
         service.execute(command);
-        return 1+nextSoNumber;
+        return nextSoNumber;
     }
 }
