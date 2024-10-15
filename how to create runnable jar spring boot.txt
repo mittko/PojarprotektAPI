@@ -1,0 +1,3 @@
+run CREATE_JAR batch file
+(runnabl ejar file will be created in 'target' folder)
+run RUN_JAR batch file to start SPRING BOOT from jar

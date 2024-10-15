@@ -46,7 +46,7 @@ public class SecurityConfig  {
                     @Override
                     public void customize(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizationManagerRequestMatcherRegistry) {
                         authorizationManagerRequestMatcherRegistry
-                                .requestMatchers("/login").permitAll()
+                                .requestMatchers("/login","/create_user").permitAll()
                                 .anyRequest().authenticated();
                     }
                 }).sessionManagement(new Customizer<SessionManagementConfigurer<HttpSecurity>>() {

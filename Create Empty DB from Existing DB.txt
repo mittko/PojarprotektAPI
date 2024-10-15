@@ -1,0 +1,9 @@
+> dblook -d 'jdbc:derby:D:/RealDB'; -z APP -o install.sql;
+> ij
+> connect 'jdbc:derby:D:\NewDB;create=true';
+> run 'install.sql';
+
+
+
+
+

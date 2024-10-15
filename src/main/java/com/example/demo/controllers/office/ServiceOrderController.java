@@ -115,32 +115,33 @@ public class ServiceOrderController<T> {
 
     @GetMapping("/next_serial_number")
     public @ResponseBody String getNextSerialNumber() throws SQLException {
-       String command = "select * from SerialTable";
-        final String[] nextSerialNumber = {""};
+       String command = "select integer(serial) from SerialTable";
+        final int[] nextSerialNumber = {0};
        service.getResult(command, new ResultSetCallback() {
            @Override
            public void result(ResultSet resultSet) throws SQLException {
                while (resultSet.next()) {
-                   nextSerialNumber[0] = resultSet.getString(1);
+                   nextSerialNumber[0] = resultSet.getInt(1);
                    break;
                }
            }
        });
-       int serialAsInt = Integer.parseInt(nextSerialNumber[0]);
+       if(nextSerialNumber[0] == 0) {
+           command = "insert into SerialTable values ('" + (nextSerialNumber[0]+1) + "')";
+       } else {
+           command = "update SerialTable set serial = '" + (nextSerialNumber[0]+1) + "'";
+       }
 
-       nextSerialNumber[0] = String.format("%07d",serialAsInt+1);
+       int result = service.execute(command);
 
-       command = "update SerialTable set serial = '" + nextSerialNumber[0] + "'";
-       service.execute(command);
-
-       return nextSerialNumber[0];
+       return String.format("%07d",nextSerialNumber[0]+1);
     }
 
 
     @GetMapping("/next_service_order_number")
     public @ResponseBody String getNextServiceOrderNumber() throws SQLException {
         String command = "select min(integer(so)) from SO_Table";
-        final int[] currentSONumber = new int[1];
+        final int[] currentSONumber = {0};
         service.getResult(command, new ResultSetCallback() {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
@@ -152,7 +153,11 @@ public class ServiceOrderController<T> {
         });
        // currentSONumber[0] = 1000024034;
         String nextSoNumber = String.format("%09d",currentSONumber[0]+1);
-        command = "update SO_Table set so = '" + nextSoNumber + "'";
+        if(currentSONumber[0] == 0) {
+            command = "insert into SO_Table values ('" + nextSoNumber + "')";
+        } else {
+            command = "update SO_Table set so = '" + nextSoNumber + "'";
+        }
         service.execute(command);
         return nextSoNumber;
     }

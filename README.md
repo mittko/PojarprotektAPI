@@ -36,24 +36,20 @@ startNetworkServer -h 0.0.0.0
 
 3.2. Connect to the Derby Server via Java
 
-To connect to the network server via Java code you need to have the derbyclient.jar in your classpath. The network connection string to this database is the IP address of the server:portnumber. For example for a server which is running on localhost you can create a new database via the following string.
+To connect to the network server via Java code you need to have the derbyclient.jar in your classpath. The network connection string to this database is the IP address of the server:portnumber.
+For example for a server which is running on localhost you can create a new database via the following string.
 
-jdbc:derby://localhost:1527/dbname;create=true
+connect jdbc:derby://localhost:1527/c:\temp\mydatabase;create=true
 If you want to connect to an existing database you can use the following string.
-jdbc:derby://localhost:1527/c:\temp\mydatabase
+connect jdbc:derby://localhost:1527/c:\temp\mydatabase
 
 
 To connect to the embedded embedded database you need derby.jar, derbynet.jar, derbyrun.jar and derbytools.jar 
 If you want to connect to an existing embedded database you can use the following string.
-jdbc:derby:c:\temp\mydatabase
+connect jdbc:derby:c:\temp\mydatabase
 
-For example a small Java client might look like the following. This assumes that you have already created a schema called a table users with the columns "name" and "number".
-
-
-
-
-
-
+For example a small Java client might look like the following.
+This assumes that you have already created a schema called a table users with the columns "name" and "number".
 
 
 import java.sql.Connection;
@@ -122,7 +118,8 @@ public class DerbyTest {
 4.1. Using Derby from the command line (ij)
 ij is Derby’s interactive JDBC scripting tool. It is a simple utility for running scripts or interactive queries against a Derby database. To start the tool open a command shell and type in "ij". This will start a shell program which can connect to your database and execute SQL commands . Stop this tool with typing in "exit;" and pressing Enter. In ij every line needs to get terminated with ;.
 
-If you want to connect to the Derby database in embedded mode you can use the following command. In this example the database is located at c:\temp\db\FAQ\db.
+If you want to connect to the Derby database in embedded mode you can use the following command.
+In this example the database is located at c:\temp\db\FAQ\db.
 
 connect 'jdbc:derby:c:\temp\db\FAQ\db';
 If you want to connect to a Derby database which is running in server mode then you can use the following command.
@@ -134,14 +131,15 @@ To disconnect from the database.
 disconnect;
 To run a SQL script from ij use the following command.
 
-run 'sqlscript.sql'
+run 'sqlscript.sql'; (VERY IMPORTANT ij always expected ; for end of command)
 
 You can also use SQL directly, e.g.
 
 select * from SCHEMA1.USERS where NUMBER='lars'
 4.2. SQL dump for the database schema
-Use the tool dblook. Type dblook on the console to see the options, the tool is really easy to use. For example to write the schema "myschema" to the file "lars.sql".
-
+Use the tool dblook. Type dblook on the console to see the options, the tool is really easy to use. 
+For example to write the schema "myschema" to the file "lars.sql".
+execute in cmd window
 dblook -d 'jdbc:derby:c:\temp\db\FAQ\db' -z myschema -o lars.sql
 
 5. Running Derby Server as Windows Service
@@ -178,16 +176,16 @@ String : -h 0.0.0.0
 Now start/adjust the service in the Windows services control panel.
 
 # CREATE EMPTY DB FROM EXISTING DATABASE SCHEMA
+1. CREATE SQL SCRIPT from exisitng database: execute in cmd -> dblook -d 'jdbc:derby:c:\temp\db\FAQ\db' -z myschema -o lars.sql
+2. open cmd type ij and press enter
 
-1.open cmd type ij and press enter
+3. establish connection and create database if not exist (create = true; must to be added):
+connect to embedded db  connect 'jdbc:derby:D:/NEWDB;create=true';
+connect to network db connect 'jdbc:derby://127.0.0.1:1527/NEWDB;create=true';
 
-2. establish connection and create database if not exist (create = true; must to be added):
-connect to embedded db  'jdbc:derby:D:/NEWDB;create=true';
-connect to network db 'jdbc:derby://127.0.0.1:1527/NEWDB:/RealDB';
+4. run command to create install.sql file from every existing database (use dblook utility) for example -> dblook -d 'jdbc:derby:D:/RealDB'; -z APP -o install.sql;
 
-3. run command to create install.sql file from every existing database (use dblook utility) for example -> dblook -d 'jdbc:derby:D:/RealDB'; -z APP -o install.sql;
-
-4. type run 'install.sql';
+5. type run 'install.sql'; (VERY IMPORTANT ij always expected ; for end of command)
 
 # Connect to database from multiple clients
 you cannot share Derby DB files among multiple JVMs. The first JVM to create or connect to existing DB will lock the files to itself so that no data corruption can occur.

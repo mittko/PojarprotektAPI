@@ -1,5 +1,8 @@
 package com.example.demo.db;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -22,8 +25,10 @@ public class DBManager {
         }
         return connection;
     }
+
+
     public static Connection getEmbeddedConnection() {
-        String embeddedConnection = "jdbc:derby:D:/RealDBAPI";
+        String embeddedConnection = "jdbc:derby:D:/NewDB";
         Connection connection;
         try {
             String driver = "org.apache.derby.jdbc.EmbeddedDriver";
