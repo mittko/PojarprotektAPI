@@ -74,14 +74,25 @@ public class WorkingBookController<T> {
 
     @PostMapping("/insert_brack")
     public String insertBrack(@RequestBody BrackModels body) throws SQLException {
-        String command = "select max(integer(number)) from BrackTableDB2";
-        final int[] maxNumber = new int[1];
+        String command = "select number from BrackTableDB2";
+        final String[] numberAsString = new String[1];
+        final int[] maxNumber = {0};
         service.getResult(command, new ResultSetCallback() {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-                    maxNumber[0] = resultSet.getInt(1);
-                    break;
+                    numberAsString[0] = resultSet.getString(1);
+
+                    int number = 0;
+                    try {
+                        number = Integer.parseInt(numberAsString[0]);
+                    } catch (Exception e) {
+
+                    }
+
+                    if(number > maxNumber[0]) {
+                        maxNumber[0] = number;
+                    }
                 }
             }
         });

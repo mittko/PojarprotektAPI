@@ -28,13 +28,25 @@ public class InvoiceController<T> {
 
         String command = "select max(integer(id)) from AcquittanceParentDB where length(id) = 10";
 
+        final String[] numberAsString = new String[1];
         final int[] maxAcquittanceNumber = new int[1];
+
         service.getResult(command, new ResultSetCallback() {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-                    maxAcquittanceNumber[0] = resultSet.getInt(1);
-                    break;
+                    numberAsString[0] = resultSet.getString(1);
+
+                    int number = 0;
+                    try {
+                        number = Integer.parseInt(numberAsString[0]);
+                    } catch (Exception e) {
+
+                    }
+
+                    if(number > maxAcquittanceNumber[0]) {
+                        maxAcquittanceNumber[0] = number;
+                    }
                 }
             }
         });
@@ -143,14 +155,26 @@ public class InvoiceController<T> {
     @PostMapping("/insert_proform")
     public String insertProform(@RequestBody InvoiceModels<T> body) throws SQLException {
         InvoiceModel parentModel = body.getParentInvoiceModel();
-        String command = "select max(integer(id)) from ProformParentDB where length(id) = 10";
+        String command = "select id from ProformParentDB";
+        //"select max(integer(id)) from ProformParentDB where length(id) = 10";
+        final String[] numberAsString = new String[1];
         final int[] maxNumber = new int[1];
         service.getResult(command, new ResultSetCallback() {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-                    maxNumber[0] = resultSet.getInt(1);
-                    break;
+                    numberAsString[0] = resultSet.getString(1);
+
+                    int number = 0;
+                    try {
+                        number = Integer.parseInt(numberAsString[0]);
+                    } catch (Exception e) {
+
+                    }
+
+                    if(number > maxNumber[0]) {
+                        maxNumber[0] = number;
+                    }
                 }
             }
         });
@@ -191,14 +215,26 @@ public class InvoiceController<T> {
     @PostMapping(path = "/insert_invoice")
     public String insertInvoice(@RequestBody InvoiceModels<T> body) throws SQLException {
         InvoiceModel parentModel = body.getParentInvoiceModel();
-        String command = "select max(integer(id)) from InvoiceParentDB5 where length(id) = 10";
+        String command = "select id from InvoiceParentDB5";
+        //"select max(integer(id)) from InvoiceParentDB5 where length(id) = 10";
+        final String[] numberAsString = new String[1];
         final int[] maxNumber = new int[1];
         service.getResult(command, new ResultSetCallback() {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-                    maxNumber[0] = resultSet.getInt(1);
-                    break;
+                    numberAsString[0] = resultSet.getString(1);
+
+                    int number = 0;
+                    try {
+                        number = Integer.parseInt(numberAsString[0]);
+                    } catch (Exception e) {
+
+                    }
+
+                    if(number > maxNumber[0]) {
+                        maxNumber[0] = number;
+                    }
                 }
             }
         });

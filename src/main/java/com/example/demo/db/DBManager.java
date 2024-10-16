@@ -28,7 +28,7 @@ public class DBManager {
 
 
     public static Connection getEmbeddedConnection() {
-        String embeddedConnection = "jdbc:derby:D:/NewDB";
+        String embeddedConnection = "jdbc:derby:D:/RealDB";
         Connection connection;
         try {
             String driver = "org.apache.derby.jdbc.EmbeddedDriver";
