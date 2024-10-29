@@ -60,7 +60,7 @@ public class ServiceOrderController<T> {
             service.execute(command, new PreparedStatementCallback<T>() {
                 @Override
                 public void callback(PreparedStatement ps) throws SQLException {
-                    ps.setString(1,"not null");
+                    ps.setString(1,"ok");
                     ps.setString(2, barcode);
                     int update = ps.executeUpdate();
                 }

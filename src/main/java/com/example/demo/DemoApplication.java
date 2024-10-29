@@ -14,7 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @ComponentScan(basePackages = {"com.example.demo"})
 
 public class DemoApplication {
-//  go to http://localhost:8080/swagger-ui/index.html to open Swagger UI
+//  go to http://localhost:1526/swagger-ui/index.html to open Swagger UI
 
 
 	public static void main(String[] args) {

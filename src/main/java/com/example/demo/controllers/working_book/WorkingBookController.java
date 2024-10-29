@@ -158,7 +158,7 @@ public class WorkingBookController<T> {
                     protokolModel.getT_O() + "','" + protokolModel.getP() + "','" + protokolModel.getHI() + "','"
                     + protokolModel.getParts() + "'," + protokolModel.getValue() + ",'" +
                     nextProtokolNumber + "','" + protokolModel.getPerson() + "','" +
-                    protokolModel.getDate() +   "','" + "null" + "','" +  protokolModel.getKontragent()
+                    protokolModel.getDate() +   "','" + "no" + "','" +  protokolModel.getKontragent()
                     + "','" + protokolModel.getInvoiceByKontragent() + "','" + protokolModel.getAdditional_data() + "')";
 
             service.execute(command);

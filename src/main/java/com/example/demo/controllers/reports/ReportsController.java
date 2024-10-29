@@ -78,7 +78,7 @@ public class ReportsController<T> {
         ArrayList<T> data = new ArrayList<>();
         String command = "select * from ProtokolTableDB5" +
                 " where date between Date('"+fromDate+"') and Date('"
-                +toDate+"') order by number";
+                +toDate+"') and (uptodate = 'no') order by number";
         repoService.getResult(command, new ResultSetCallback() {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
@@ -98,7 +98,7 @@ public class ReportsController<T> {
                     protokolModel.setValue(resultSet.getString(12));
                     protokolModel.setNumber(resultSet.getString(13));
                     protokolModel.setPerson(resultSet.getString(14));
-                    protokolModel.setDate("01.06.2016");//(resultSet.getString(15));
+                    protokolModel.setDate(resultSet.getString(15));
                     protokolModel.setKontragent(resultSet.getString(16));
                     protokolModel.setInvoiceByKontragent(resultSet.getString(17));
                     protokolModel.setAdditional_data(resultSet.getString(18));
@@ -206,7 +206,7 @@ public class ReportsController<T> {
                    protokolModel.setValue(resultSet.getString(12));
                    protokolModel.setNumber(resultSet.getString(13));
                    protokolModel.setPerson(resultSet.getString(14));
-                   protokolModel.setDate("01.06.2016");//(resultSet.getString(15));
+                   protokolModel.setDate(resultSet.getString(15));
                    protokolModel.setKontragent(resultSet.getString(16));
                    protokolModel.setInvoiceByKontragent(resultSet.getString(17));
                    protokolModel.setAdditional_data(resultSet.getString(18));
