@@ -26,7 +26,7 @@ public class InvoiceController<T> {
                                     @PathVariable("artikulTable") String artikulTable) throws SQLException {
         AcquittanceModel parentModel = body.getParentModel();
 
-        String command = "select max(integer(id)) from AcquittanceParentDB where length(id) = 10";
+        String command = "select id from AcquittanceParentDB";
 
         final String[] numberAsString = new String[1];
         final int[] maxAcquittanceNumber = new int[1];

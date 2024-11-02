@@ -54,14 +54,23 @@ public class NewExtinguishersController<T> {
     @PostMapping(path = "/insert_new_extinguisher")
     public String insertProtokol(@RequestBody ProtokolModelBodyList body) throws SQLException {
 
-        final int[] maxNumber = new int[1];
-        String command = "select max(integer(number)) from ProtokolTableDB5 ";
+        final int[] number = new int[1];
+        int[] maxNumber = {0};
+        String command = "select number from ProtokolTableDB5 ";
         service.getResult(command, new ResultSetCallback() {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-                    maxNumber[0] = resultSet.getInt(1);
-                    break;
+                    String numberAsString = null;
+                    try {
+                        numberAsString = resultSet.getString(1);
+                        number[0] = Integer.parseInt(numberAsString);
+                    } catch (Exception e) {
+                        System.out.println("invalid string character for type integer " + numberAsString);
+                    }
+                    if(number[0] > maxNumber[0]) {
+                        maxNumber[0] = number[0];
+                    }
                 }
             }
         });
@@ -167,7 +176,7 @@ public class NewExtinguishersController<T> {
 
     @PostMapping("/create_new_extingusihser")
     public int createNewExtinguisher(@RequestBody ExtinguisherModel body) throws SQLException {
-        String command = "insert into  NewExtinguishersDB3 values('" + body.getType() + "','"
+        String command = "insert into NewExtinguishersDB3 values('" + body.getType() + "','"
                 + body.getWheight() + "','" + body.getCategory() + "','" + body.getBrand() + "'," + body.getQuantity()
                 + ",'" + body.getPrice() + "','" + body.getInvoiceByKontragent() + "','" + body.getKontragent() + "','"
                 + body.getDateString() + "','" + body.getSaller() + "','" + body.getPercentProfit() + "')";
