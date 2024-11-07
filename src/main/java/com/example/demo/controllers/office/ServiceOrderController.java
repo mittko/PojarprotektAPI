@@ -161,4 +161,10 @@ public class ServiceOrderController<T> {
         service.execute(command);
         return nextSoNumber;
     }
+
+    @PutMapping("update_service_number/{so}")
+    public int updateServiceOrderNumber(@PathVariable("so") String updatedNumber) throws SQLException {
+        String command = "update SO_Table  set so = '" + updatedNumber + "'";
+        return service.execute(command);
+    }
 }
