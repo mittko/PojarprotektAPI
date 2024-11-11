@@ -106,7 +106,10 @@ public class InvoiceController<T> {
                     }
                 });
 
-                int quantityToDecease = Integer.parseInt(model.getQuantity());
+                double quantityToDecease = 0;
+                try {
+                    quantityToDecease = Double.parseDouble(model.getQuantity());
+                } catch (Exception e) {}
 
                 for(ArtikulInfo artikulInfo : artikulsInfo) {
                     command = "update " + artikulTable
@@ -128,7 +131,8 @@ public class InvoiceController<T> {
 
                     } else if(quantityToDecease <= artikulInfo.getQuantity()) {
 
-                        int finalQuantityToDecease = quantityToDecease;
+                        int finalQuantityToDecease = (int)quantityToDecease;
+
                         service.execute(command, new PreparedStatementCallback<T>() {
                             @Override
                             public void callback(PreparedStatement ps) throws SQLException {
@@ -300,7 +304,10 @@ public class InvoiceController<T> {
                             }
                         });
 
-                        int quantityToDecease = Integer.parseInt(model.getQuantity());
+                        double quantityToDecease = 0;
+                        try {
+                            quantityToDecease = Double.parseDouble(model.getQuantity());
+                        }catch (Exception e){}
 
                         for(ArtikulInfo artikulInfo : artikulsInfo) {
                             command = "update ArtikulsDB"
@@ -322,7 +329,7 @@ public class InvoiceController<T> {
 
                             } else if(quantityToDecease <= artikulInfo.getQuantity()) {
 
-                                int finalQuantityToDecease = quantityToDecease;
+                                int finalQuantityToDecease = (int)quantityToDecease;
                                 service.execute(command, new PreparedStatementCallback<T>() {
                                     @Override
                                     public void callback(PreparedStatement ps) throws SQLException {

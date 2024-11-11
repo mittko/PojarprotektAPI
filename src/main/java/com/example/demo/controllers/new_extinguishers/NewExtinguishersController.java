@@ -68,7 +68,8 @@ public class NewExtinguishersController<T> {
                     } catch (Exception e) {
                         System.out.println("invalid string character for type integer " + numberAsString);
                     }
-                    if(number[0] > maxNumber[0]) {
+                    if(number[0] < 1000000/*because in number column has numbers which starts with 1, 2, 3 .....*/
+                      && number[0] > maxNumber[0]) {
                         maxNumber[0] = number[0];
                     }
                 }

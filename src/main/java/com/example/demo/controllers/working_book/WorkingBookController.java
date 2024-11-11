@@ -141,7 +141,8 @@ public class WorkingBookController<T> {
 
                       }
 
-                      if(number < 1000000/*because in number column has numbers which starts with 1, 2, 3 .....*/ && number > maxNumber[0]) {
+                      if(number < 1000000/*because in number column has numbers which starts with 1, 2, 3 .....*/
+                              && number > maxNumber[0]) {
                           maxNumber[0] = number;
                       }
                   }

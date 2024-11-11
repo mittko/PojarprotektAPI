@@ -5,6 +5,7 @@ import com.example.demo.callbacks.ResultSetCallback;
 import com.example.demo.exceptions.DublicateNumberException;
 import com.example.demo.models.*;
 import com.example.demo.services.RepoService;
+import com.example.demo.utils.DateManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -573,6 +575,10 @@ public class ReportsController<T> {
         }
         if(fromDate != null && toDate != null) {
             command += String.format(" and %s.date between Date('%s') and Date('%s')", invoiceParent, fromDate, toDate);
+        } else {
+            toDate = DateManager.getReversedSystemDate();
+            fromDate = DateManager.getDateBeforeAnotherDate(365,new Date());
+            command += String.format( " and %s.date between Date('%s') and Date('%s')",invoiceParent,fromDate,toDate);
         }
         command += " order by CAST(date as DATE) desc";
         return command;
@@ -659,9 +665,21 @@ public class ReportsController<T> {
             String placeholder = null;
             placeholder = (selectedCriterii == 0) ? "where" :  "and";
             command += String.format(" %s date between Date('%s') and Date('%s')",placeholder,fromDate,toDate); // 1000018166032
+        } else { // if no dates are selected set default values for last year
+            String placeholder = null;
+            placeholder = (selectedCriterii == 0) ? "where" : "and";
+            toDate = DateManager.getReversedSystemDate();
+            fromDate = DateManager.getDateBeforeAnotherDate(365,new Date());
+            command += String.format(" %s date between Date('%s') and Date('%s')",placeholder,fromDate,toDate); // 1000018166032
+
         }
 
         command += " order by CAST(date as DATE) desc";
+
+
+       /* toDate = DateManager.getReversedSystemDate();
+        fromDate = DateManager.getDateBeforeAnotherDate(365,new Date());
+        System.out.printf("%s %s\n",fromDate,toDate);*/
         return command;
     }
 
