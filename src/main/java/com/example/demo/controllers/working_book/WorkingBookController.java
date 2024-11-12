@@ -254,17 +254,24 @@ public class WorkingBookController<T> {
     }
 
     @GetMapping("/get_protokol_number")
-    public @ResponseBody String getProtokolNumber() throws SQLException {
-        final int[] currentNumber = {0};
-        service.getResult("select max(integer(number)) from ProtokolTableDB5 ", new ResultSetCallback() {
+    public @ResponseBody String getNextProtokolNumber() throws SQLException {
+        final int[] maxNumber = {0};
+        service.getResult("select number from ProtokolTableDB5 ", new ResultSetCallback() {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
-                    currentNumber[0] = resultSet.getInt(1);
-                    break;
+                    String currentNumber = resultSet.getString(1);
+                    int number = 0;
+                    try {
+                        number = Integer.parseInt(currentNumber);
+                    } catch (Exception e) {}
+                    if(number < 1000000/*because in number column has numbers which starts with 1, 2, 3 .....*/
+                    && number > maxNumber[0]) {
+                        maxNumber[0] = number;
+                    }
                 }
             }
         });
-        return String.format("%07d",currentNumber[0]);
+        return String.format("%07d",maxNumber[0]+1);
     }
 }
