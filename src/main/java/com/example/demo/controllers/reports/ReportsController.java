@@ -172,7 +172,7 @@ public class ReportsController<T> {
             @RequestParam(value = "client",required = false) String client,
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "wheight", required = false) String wheight,
-            @RequestParam(value = "barcod", required = false) String barcod,
+            @RequestParam(value = "barcode", required = false) String barcode,
             @RequestParam(value = "serial", required = false) String serial,
             @RequestParam(value = "category", required = false) String category,
             @RequestParam(value = "brand", required = false) String brand,
@@ -188,7 +188,7 @@ public class ReportsController<T> {
                 "invoiceByKontragent, additional_data, uptodate from ProtokolTableDB5";
 
         command += constructQueryWithPrams(client,number,type,wheight,category,brand,doing,
-                serial,barcod, fromDate,toDate);
+                serial,barcode, fromDate,toDate);
         repoService.getResult(command, new ResultSetCallback() {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
@@ -228,7 +228,7 @@ public class ReportsController<T> {
             @RequestParam(value = "wheight", required = false) String wheight,
             @RequestParam(value = "brand", required = false) String brand,
             @RequestParam(value = "category", required = false) String category,
-            @RequestParam(value = "barcod", required = false) String barcod,
+            @RequestParam(value = "barcode", required = false) String barcode,
             @RequestParam(value = "serial", required = false) String serial,
             @RequestParam(value = "number", required = false) String number,
             @RequestParam(value = "fromDate", required = false) String fromDate,
@@ -238,7 +238,7 @@ public class ReportsController<T> {
         String command = "select client, type, wheight, brand, category, reasons, barcod, serial, number, tehnik, date from BrackTableDB2";
 
         command += constructQueryWithPrams(client,number,type,wheight,category,brand,null,
-                serial,barcod, fromDate,toDate);
+                serial,barcode, fromDate,toDate);
 
         ArrayList<T> brackList = new ArrayList<>();
         repoService.getResult(command, new ResultSetCallback() {
@@ -657,7 +657,7 @@ public class ReportsController<T> {
         if(barcode != null) {
             String placeholder = null;
             placeholder = (selectedCriterii == 0) ? "where" :  "and";
-            command += String.format(" %s barcod = '%s'",placeholder,barcode); // 1000018166032
+            command += String.format(" %s barcod = '%s'",placeholder,barcode); // 1000024289015
             selectedCriterii++;
         }
 
