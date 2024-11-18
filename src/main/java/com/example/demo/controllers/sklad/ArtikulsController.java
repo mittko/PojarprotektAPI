@@ -165,6 +165,7 @@ public class ArtikulsController<T> {
       return update[0];
     }
 
+
     @PutMapping("/edit_artikul_price/{table}/{newValue}/{percentProfit}/{artikul}/{kontragent}/{invoiceByKontragent}")
     public int editArtikulPrice(@PathVariable("table") String table, @PathVariable("newValue") String newValue, @PathVariable("percentProfit") String percentProfit,
                                 @PathVariable("artikul") String artikul, @PathVariable("kontragent") String kontragent,
