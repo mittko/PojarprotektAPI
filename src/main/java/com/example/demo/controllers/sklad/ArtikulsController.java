@@ -113,6 +113,7 @@ public class ArtikulsController<T> {
         return 0;
     }
 
+
     @PutMapping("/rename_artikul/{table}/{oldName}/{newName}")
     public int renameArtikul(@PathVariable("table") String table, @PathVariable("oldName") String oldName, @PathVariable("newName") String newName) throws SQLException {
      String command = "update " + table + " set artikul = '" // artikul

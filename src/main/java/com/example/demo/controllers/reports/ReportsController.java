@@ -577,7 +577,7 @@ public class ReportsController<T> {
             command += String.format(" and %s.date between Date('%s') and Date('%s')", invoiceParent, fromDate, toDate);
         } else {
             toDate = DateManager.getReversedSystemDate();
-            fromDate = DateManager.getDateBeforeAnotherDate(365,new Date());
+            fromDate = DateManager.getDateBeforeAnotherDate(2*365,new Date());
             command += String.format( " and %s.date between Date('%s') and Date('%s')",invoiceParent,fromDate,toDate);
         }
         command += " order by CAST(date as DATE) desc";
@@ -669,7 +669,7 @@ public class ReportsController<T> {
             String placeholder = null;
             placeholder = (selectedCriterii == 0) ? "where" : "and";
             toDate = DateManager.getReversedSystemDate();
-            fromDate = DateManager.getDateBeforeAnotherDate(365,new Date());
+            fromDate = DateManager.getDateBeforeAnotherDate(2*365,new Date());
             command += String.format(" %s date between Date('%s') and Date('%s')",placeholder,fromDate,toDate); // 1000018166032
 
         }
