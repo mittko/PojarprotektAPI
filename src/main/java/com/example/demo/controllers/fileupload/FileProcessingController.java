@@ -1,15 +1,17 @@
-package com.example.demo.fileupload;
+package com.example.demo.controllers.fileupload;
 
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.*;
 import java.util.Objects;
@@ -19,6 +21,31 @@ import java.util.zip.ZipOutputStream;
 @RestController
 public class FileProcessingController {
 
+    // method not to download the file to the server and then send it to the client but streaming it to the client directly
+    @GetMapping("/download_stream")
+    public ResponseEntity<StreamingResponseBody> downloadStreamFile(@RequestParam(value = "fileName") String fileName) {
+        String filePath  = "D:\\";
+        final File file =  new File(filePath + File.separator+fileName);
+        StreamingResponseBody stream = outputStream -> {
+            byte[] b = new byte[1024 * 2];
+            try(InputStream inputStream = new FileInputStream(file)) {
+                int r;
+                while ((r = inputStream.read(b)) != -1) {
+                    outputStream.write(b,0, r);
+                }
+                outputStream.flush(); // Ensure all data is sent
+            }
+        };
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentLength(file.length());
+        headers.setContentType(MediaType.parseMediaType("application/octet-stream"));
+        headers.setContentDisposition(ContentDisposition.builder("attachment").filename("file.zip").build());
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(stream);
+    }
     @GetMapping(path = "/download")
     public ResponseEntity<?> downloadFile(@RequestParam(value = "fileName") String fileName) throws FileNotFoundException {
        // Checking whether the file requested for download exists or not

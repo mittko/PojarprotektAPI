@@ -11,9 +11,12 @@ import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.SpringVersion;
+import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.util.UrlPathHelper;
@@ -31,6 +34,19 @@ public class DemoApplication  implements WebMvcConfigurer {
 
 		//System.out.println(SpringVersion.getVersion());
 	}
+
+    // prevent timeout issues on downloading large files and  support async calls
+	@Override
+	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+		configurer.setDefaultTimeout(-1);// set it to a positive integer (milliseconds), the value of -1 will completely remove the timeout
+		configurer.setTaskExecutor(asyncTaskExecutor());
+	}
+
+	@Bean
+	public AsyncTaskExecutor asyncTaskExecutor() {
+		return new SimpleAsyncTaskExecutor("async");
+	}
+
 
 	// allow front slash in path variables
 	@Bean
