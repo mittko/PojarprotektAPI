@@ -342,7 +342,7 @@ public class ReportsController<T> {
 
         String command =
                 String.format("select * from %s , " +
-                        "%s where %s.id = %s.id", invoiceParent,invoiceChild, invoiceParent, invoiceChild);
+                        "%s where %s.id = %s.id", invoiceParent,invoiceChild, invoiceParent, invoiceChild,invoiceParent);
 
         command += constructQueryWithParamsForInvoice(invoiceParent,invoiceChild,client, invoice,
                 artikul, fromDate, toDate);
@@ -580,7 +580,7 @@ public class ReportsController<T> {
             fromDate = DateManager.getDateBeforeAnotherDate(2*365,new Date());
             command += String.format( " and %s.date between Date('%s') and Date('%s')",invoiceParent,fromDate,toDate);
         }
-        command += " order by CAST(date as DATE) desc";
+        command += String.format(" order by CAST(date as DATE) desc, %s.id desc",invoiceParent);//"" order by CAST(date as DATE) desc";
         return command;
     }
 

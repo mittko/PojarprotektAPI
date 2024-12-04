@@ -6,6 +6,7 @@ import com.example.demo.controllers.working_book.ArtikulInfo;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.*;
 import com.example.demo.services.RepoService;
+import com.example.demo.utils.DateManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -216,11 +217,11 @@ public class InvoiceController<T> {
         return nextProformNumber;
     }
 
-    @PostMapping(path = "/insert_invoice")
-    public String insertInvoice(@RequestBody InvoiceModels<T> body) throws SQLException {
+    @PostMapping(path = "/insert_invoice/{isFiscalBon}")
+    public String insertInvoice(@RequestBody InvoiceModels<T> body,@PathVariable boolean isFiscalBon) throws SQLException {
         InvoiceModel parentModel = body.getParentInvoiceModel();
         String command = "select id from InvoiceParentDB5";
-        //"select max(integer(id)) from InvoiceParentDB5 where length(id) = 10";
+
         final String[] numberAsString = new String[1];
         final int[] maxNumber = new int[1];
         service.getResult(command, new ResultSetCallback() {
@@ -242,9 +243,11 @@ public class InvoiceController<T> {
                 }
             }
         });
+
         String nextInvoiceNumber  = String.format("%010d",maxNumber[0]+1);
 
-        command = "insert into InvoiceParentDB5 values ('" + nextInvoiceNumber
+        command = "insert into InvoiceParentDB5 values ('" +
+                (isFiscalBon ? DateManager.generateFiscalBonNumber() : nextInvoiceNumber)
                 + "','" + parentModel.getPayment() + "','" + parentModel.getDiscount() + "','" + parentModel.getValue() + "','"
                 + parentModel.getClient() + "','" + parentModel.getSaller() + "','" +
                 parentModel.getDate()+ "','" + parentModel.getProtokol()
@@ -260,7 +263,7 @@ public class InvoiceController<T> {
                     service.execute(command, new PreparedStatementCallback<T>() {
                         @Override
                         public void callback(PreparedStatement ps) throws SQLException {
-                            ps.setString(1, nextInvoiceNumber);
+                            ps.setString(1,  (isFiscalBon ? DateManager.generateFiscalBonNumber() : nextInvoiceNumber));
                             ps.setString(2, model.getMake());
                             ps.setString(3, model.getMed());
                             ps.setString(4, model.getQuantity());

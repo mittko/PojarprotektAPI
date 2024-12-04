@@ -21,4 +21,9 @@ public class DateManager {
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         return dateFormat.format(date2);
     }
+    public static String generateFiscalBonNumber() {
+        DateFormat dateFormat = new SimpleDateFormat("yy.MM.dd.HH.mm.ss");// ("yyyy.MM.dd");
+        Date date = new Date();
+        return dateFormat.format(date).replace(".", "");
+    }
 }
