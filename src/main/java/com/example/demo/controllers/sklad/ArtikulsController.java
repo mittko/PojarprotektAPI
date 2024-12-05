@@ -260,5 +260,21 @@ public class ArtikulsController<T> {
         return maxValue[0];
     }
 
+    @GetMapping("artikul_by_barcode/{barcode}")
+    public ArtikulModel getArtikulByBarcode(@PathVariable("barcode") String barcode) throws SQLException {
+        String command = String.format("select artikul from ARTIKUL_BARCODE3 where barcode = '%s'",barcode);
+        ArtikulModel model = new ArtikulModel();
+        service.getResult(command, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+                    model.setArtikul(resultSet.getString(1));
+                    break;
+                }
+            }
+        });
+        return model;
+    }
+
 
 }
