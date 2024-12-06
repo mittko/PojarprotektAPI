@@ -1,15 +1,17 @@
 package com.example.demo.models;
 
+import java.util.ArrayList;
+
 public class ArtikulModel {
    // artikul, quantity, med , value, client, invoice, date, operator, percentProfit, barcode
-    private String artikul; // артикул
-    private int quantity; // количество
-    private String med; // м.ед
-    private float price; // ед.цена
+    private String artikul; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    private int quantity; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    private String med; // пїЅ.пїЅпїЅ
+    private float price; // пїЅпїЅ.пїЅпїЅпїЅпїЅ
     private String date;
-    private String invoice;// фактура
-    private String kontragent; // контрагент});
-    private String barcod; // баркод
+    private String invoice;// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    private String kontragent; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ});
+    private String barcod; // пїЅпїЅпїЅпїЅпїЅпїЅ
 
     private String percentProfit;
 
@@ -93,5 +95,14 @@ public class ArtikulModel {
 
     public void setPercentProfit(String percentProfit) {
         this.percentProfit = percentProfit;
+    }
+
+    ArrayList<String> barcodes;
+    public void setBarcodes(ArrayList<String> barcodes) {
+        this.barcodes = barcodes;
+    }
+
+    public ArrayList<String> getBarcodes() {
+        return barcodes;
     }
 }

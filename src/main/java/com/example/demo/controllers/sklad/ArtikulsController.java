@@ -77,6 +77,12 @@ public class ArtikulsController<T> {
 
         service.execute(command);
 
+        for(String barcode : body.getBarcodes()) {
+            command = "insert into ARTIKUL_BARCODE3 values ('" + barcode + "','" +
+                    body.getArtikul() + "')";
+            service.execute(command);
+        }
+
         return 1;
     }
 
