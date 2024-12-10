@@ -5,15 +5,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -21,8 +21,41 @@ import java.util.zip.ZipOutputStream;
 @RestController
 public class FileProcessingController {
 
+    private static final String UPLOAD_DIR = "D:/app_version_uploaded";
+
+    @PostMapping("/upload_app_version")
+    public ResponseEntity<String> uploadLargeFile(HttpServletRequest request) throws IOException {
+        String fileName = request.getHeader("X-Filename");
+        if (fileName == null || fileName.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File name is missing in headers");
+        }
+
+        File file = new File(fileName);
+        if(!file.exists()) {
+            Files.createDirectories(Paths.get(UPLOAD_DIR));
+        }
+        Path filePath = Paths.get(UPLOAD_DIR, fileName);
+
+        try (InputStream inputStream = request.getInputStream()) {
+
+            OutputStream out = new FileOutputStream(filePath.toFile());
+
+            byte[] buffer = new byte[10 * 1024 * 1024]; // 8KB buffer size
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+            out.flush();
+            out.close();
+            return ResponseEntity.ok("File uploaded successfully: " + fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File upload failed");
+        }
+    }
+
     // method not to download the file to the server and then send it to the client but streaming it to the client directly
-    @GetMapping("/download_stream")
+    @GetMapping("/download_app_version")
     public ResponseEntity<StreamingResponseBody> downloadStreamFile(@RequestParam(value = "fileName") String fileName) {
         String filePath  = "D:\\";
         final File file =  new File(filePath + File.separator+fileName);

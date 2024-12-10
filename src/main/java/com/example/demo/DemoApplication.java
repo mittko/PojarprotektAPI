@@ -17,6 +17,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.util.UrlPathHelper;
@@ -33,6 +34,12 @@ public class DemoApplication  implements WebMvcConfigurer {
 		SpringApplication.run(DemoApplication.class, args);
 
 		//System.out.println(SpringVersion.getVersion());
+	}
+
+	// enable cross-origin resource sharing (CORS)
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**");
 	}
 
     // prevent timeout issues on downloading large files and  support async calls
