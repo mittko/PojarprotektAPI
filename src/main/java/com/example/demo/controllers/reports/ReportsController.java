@@ -78,9 +78,13 @@ public class ReportsController<T> {
     public @ResponseBody T getDiaryInfo(@RequestParam("fromDate") String fromDate,
                                                    @RequestParam("toDate") String toDate) throws SQLException {
         ArrayList<T> data = new ArrayList<>();
-        String command = "select * from ProtokolTableDB5" +
-                " where date between Date('"+fromDate+"') and Date('"
-                +toDate+"') and (uptodate = 'no') order by number";
+
+       String command = "select client, type, wheight, barcod, serial, category, brand, " +
+                "T_O, P, HI, parts, value, number,  person, date, kontragent, " +
+                "invoiceByKontragent, additional_data, uptodate from ProtokolTableDB5" +
+               " where date between Date('"+fromDate+"') and Date('"+toDate+"')" +
+               " and (uptodate = 'no' or uptodate is NULL) order by number";// CAST(date as DATE) desc //or LENGTH(uptodate) = 0
+
         repoService.getResult(command, new ResultSetCallback() {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
