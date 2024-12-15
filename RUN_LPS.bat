@@ -6,4 +6,4 @@ D:
 cd D:\Pojarprotekt_JavaHome_corretto-17.0.8.1\bin
 
 REM run jar
-java -jar D:\PojarprotektAPI\target\demo-0.0.1-SNAPSHOT.jar
+java -jar D:\PojarprotektAPI\target\LPS.jar

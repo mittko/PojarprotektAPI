@@ -21,7 +21,7 @@ import java.util.zip.ZipOutputStream;
 @RestController
 public class FileProcessingController {
 
-    private static final String UPLOAD_DIR = "D:/app_version_uploaded";
+    private static final String UPLOAD_DIR = "D:/";
 
     @PostMapping("/upload_app_version")
     public ResponseEntity<String> uploadLargeFile(HttpServletRequest request) throws IOException {
@@ -60,7 +60,7 @@ public class FileProcessingController {
         String filePath  = "D:\\";
         final File file =  new File(filePath + File.separator+fileName);
         StreamingResponseBody stream = outputStream -> {
-            byte[] b = new byte[1024 * 2];
+            byte[] b = new byte[1024 * 1024 * 10];
             try(InputStream inputStream = new FileInputStream(file)) {
                 int r;
                 while ((r = inputStream.read(b)) != -1) {

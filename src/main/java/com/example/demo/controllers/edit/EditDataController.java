@@ -26,4 +26,13 @@ public class EditDataController {
                 table,column,value,clauseColumn,clauseValue);
         return service.execute(command);
     }
+    @PutMapping("/update_column_width/{table}/{column}/{width}")
+    public @ResponseBody Integer updateColumnWidth(@PathVariable("table") String table,
+                                                   @PathVariable("column") String column,
+                                                   @PathVariable("width") Integer width) throws SQLException {
+        String command = String.format(
+                "alter table %s alter column %s set data type varchar(%d)",
+                table, column, width);
+        return service.execute(command);
+    }
 }

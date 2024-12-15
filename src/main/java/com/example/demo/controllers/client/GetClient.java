@@ -140,6 +140,7 @@ public class GetClient<T> {
                     firm.setIncorrect_person(resultSet.getString(13));
                     firm.setVat_registration(resultSet.getString(14));
 
+                    int stop = 0;
                     break;
                 }
             }

@@ -28,7 +28,7 @@ public class DBManager {
 
 
     public static Connection getEmbeddedConnection() {
-        String embeddedConnection = "jdbc:derby:D:/RealDBAPI";
+        String embeddedConnection = "jdbc:derby:D:/RealDBLPS";// to build Pojarprotect -> RealDB for LPS -> RealDBLPS
         Connection connection;
         try {
             String driver = "org.apache.derby.jdbc.EmbeddedDriver";
