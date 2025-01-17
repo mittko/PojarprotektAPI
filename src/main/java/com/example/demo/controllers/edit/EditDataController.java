@@ -1,19 +1,19 @@
 package com.example.demo.controllers.edit;
 
+import com.example.demo.callbacks.PreparedStatementCallback;
 import com.example.demo.services.RepoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.parameters.P;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 @RestController
-public class EditDataController {
+public class EditDataController<T> {
 
     @Autowired
-    RepoService service;
+    RepoService<T> service;
 
 
     @PutMapping("/update_data/{table}/{column}/{value}/{clauseColumn}/{clauseValue}")
@@ -35,4 +35,23 @@ public class EditDataController {
                 table, column, width);
         return service.execute(command);
     }
+
+    @DeleteMapping("/delete_item/{table}/{column_clause}/{column_value}")
+    public @ResponseBody Integer deletedItem(@PathVariable("table") String table,
+                                             @PathVariable("column_clause") String columnClause,
+                                             @PathVariable("column_value") String columnValue) throws SQLException {
+        final int[] result = new int[1];
+        String command = "delete from " + table
+                + " where "+columnClause+" = ?";
+        service.execute(command, new PreparedStatementCallback<T>() {
+            @Override
+            public void callback(PreparedStatement ps) throws SQLException {
+                ps.setString(1, columnValue);
+                result[0] = ps.executeUpdate();
+            }
+        });
+        String fak = command;
+        return result[0];
+    }
+
 }
