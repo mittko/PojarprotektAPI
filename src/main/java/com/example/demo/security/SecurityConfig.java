@@ -47,7 +47,7 @@ public class SecurityConfig  {
                     public void customize(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizationManagerRequestMatcherRegistry) {
                         authorizationManagerRequestMatcherRegistry
                                 .requestMatchers("/login","/create_user",
-                                        "/download_app_version","upload_app_version").permitAll()
+                                        "/download_app","upload_app_version").permitAll()
                                 .anyRequest().authenticated();
                     }
                 }).sessionManagement(new Customizer<SessionManagementConfigurer<HttpSecurity>>() {

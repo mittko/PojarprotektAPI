@@ -58,10 +58,10 @@ public class FileProcessingController {
 
 
     // method not to download the file to the server and then send it to the client but streaming it to the client directly
-    @GetMapping("/download_app_version")
-    public ResponseEntity<StreamingResponseBody> downloadStreamFile(@RequestParam(value = "fileName") String fileName) {
-        String filePath  = "D:\\";
-        final File file =  new File(filePath + File.separator+fileName);
+    @GetMapping("/download_app")
+    public ResponseEntity<StreamingResponseBody> downloadStreamFile() {
+        String filePath  = "D:\\Pojarprotekt.zip";
+        final File file =  new File(filePath);
         StreamingResponseBody stream = outputStream -> {
             byte[] b = new byte[1024 * 1024 * 10];
             try(InputStream inputStream = new FileInputStream(file)) {
@@ -76,7 +76,7 @@ public class FileProcessingController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentLength(file.length());
         headers.setContentType(MediaType.parseMediaType("application/octet-stream"));
-        headers.setContentDisposition(ContentDisposition.builder("attachment").filename("file.zip").build());
+        headers.setContentDisposition(ContentDisposition.builder("attachment").filename("Pojarprotekt.zip").build());
 
         return ResponseEntity.ok()
                 .headers(headers)

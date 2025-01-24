@@ -36,6 +36,7 @@ public class EditDataController<T> {
         return service.execute(command);
     }
 
+
     @DeleteMapping("/delete_item/{table}/{column_clause}/{column_value}")
     public @ResponseBody Integer deletedItem(@PathVariable("table") String table,
                                              @PathVariable("column_clause") String columnClause,
