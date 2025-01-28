@@ -26,14 +26,14 @@ public class ArtikulsController<T> {
     public @ResponseBody List<T> getArtikuls(@RequestParam("grey") boolean grey,
                                              @RequestParam(value = "order_by_date") boolean order_by_date
             , @RequestParam(value="quantityPositive" , required = false) boolean quantityPositive,
-                                             @RequestParam(value = "sklad") String sklad) throws SQLException {
+                                             @RequestParam(value = "sklad",required = false) String sklad) throws SQLException {
         String table = grey ? "GreyArtikulsDB" : "ArtikulsDB" ;
         String orderBy = order_by_date ? "CAST(date as DATE) desc" : "artikul";
         String command = "";
         if(quantityPositive && sklad != null) {
             command = String.format("select * from %s where quantity > 0 and sklad = '%s' order by %s",table,sklad,orderBy);
         } else {
-            command = String.format("select * from %s where sklad = '%s' order by %s",table, sklad, orderBy);
+            command = String.format("select * from %s order by %s",table, orderBy);
         }
 
         ArrayList<T> artikuls = new ArrayList<>();
