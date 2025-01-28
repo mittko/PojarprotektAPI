@@ -67,7 +67,8 @@ public class ArtikulsController<T> {
         String command = "insert into " + table + " values ('" + body.getArtikul() + "',"
                 + body.getQuantity() + ",'" + body.getMed()
                 + "','" + body.getPrice() + "','" + body.getInvoice() + "','" + body.getKontragent() + "','"
-                + body.getDate() + "','" + body.getPerson() + "','" + body.getPercentProfit() + "','" + body.getBarcod() +  "')";
+                + body.getDate() + "','" + body.getPerson() + "','" + body.getPercentProfit() + "','" + body.getBarcod()
+                  + "','" +  body.getSklad() + "')";
 
         service.execute(command);
 
