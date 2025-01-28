@@ -21,17 +21,19 @@ public class ArtikulsController<T> {
 
 
 
+
     @GetMapping(path = "/artikuls_data")
     public @ResponseBody List<T> getArtikuls(@RequestParam("grey") boolean grey,
                                              @RequestParam(value = "order_by_date") boolean order_by_date
-    , @RequestParam(value="quantityPositive" , required = false) boolean quantityPositive) throws SQLException {
+            , @RequestParam(value="quantityPositive" , required = false) boolean quantityPositive,
+                                             @RequestParam(value = "sklad") String sklad) throws SQLException {
         String table = grey ? "GreyArtikulsDB" : "ArtikulsDB" ;
         String orderBy = order_by_date ? "CAST(date as DATE) desc" : "artikul";
         String command = "";
-        if(quantityPositive) {
-            command = String.format("select * from %s where quantity > 0 order by %s",table,orderBy);
+        if(quantityPositive && sklad != null) {
+            command = String.format("select * from %s where quantity > 0 and sklad = '%s' order by %s",table,sklad,orderBy);
         } else {
-            command = String.format("select * from %s order by %s",table,orderBy);
+            command = String.format("select * from %s where sklad = '%s' order by %s",table, sklad, orderBy);
         }
 
         ArrayList<T> artikuls = new ArrayList<>();
@@ -50,7 +52,7 @@ public class ArtikulsController<T> {
                     model.setDate(resultSet.getString(7));
                     model.setPerson(resultSet.getString(8));
                     model.setPercentProfit(resultSet.getString(9));
-
+                    model.setSklad(resultSet.getString(11));
                     artikuls.add((T) model);
                 }
             }

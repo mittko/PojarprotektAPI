@@ -17,6 +17,16 @@ public class ArtikulModel {
 
     private String person;
 
+    private String sklad;
+
+    public String getSklad() {
+        return sklad;
+    }
+
+    public void setSklad(String sklad) {
+        this.sklad = sklad;
+    }
+
     public String getPerson() {
         return person;
     }

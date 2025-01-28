@@ -1,6 +1,8 @@
 package com.example.demo.controllers.edit;
 
 import com.example.demo.callbacks.PreparedStatementCallback;
+import com.example.demo.models.ArtikulSimpleModel;
+import com.example.demo.models.ArtikulSimpleModelBodyList;
 import com.example.demo.services.RepoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
@@ -15,6 +17,32 @@ public class EditDataController<T> {
     @Autowired
     RepoService<T> service;
 
+    @PutMapping("/add_column/{table}/{column}/{column_length}")
+    public @ResponseBody Integer addTableColumn(@PathVariable("table") String table, @PathVariable("column") String columnName,
+                                                @PathVariable("column_length") Integer columnLength) throws SQLException {
+        String command = "ALTER TABLE " + table + " ADD COLUMN " + columnName
+                + " VARCHAR(" + columnLength + ")";
+        int result = service.execute(command);
+
+        // set default value
+        command = "update ArtikulsDB set sklad = 'Office'";
+
+        service.execute(command);
+
+        return result;
+    }
+
+
+    @PutMapping("/update_artikuls_column")
+    public @ResponseBody Integer updateArtikulsColumnData(@RequestBody ArtikulSimpleModelBodyList body) throws SQLException {
+        int result = 0;
+        for(ArtikulSimpleModel artikul : body.getSimpleModels()) {
+            final String command = String.format("update ArtikulsDB set sklad = '%s' where artikul = '%s'",
+                    artikul.getSklad(), artikul.getArtikul());
+            result += service.execute(command);
+        }
+        return result;
+    }
 
     @PutMapping("/update_data/{table}/{column}/{value}/{clauseColumn}/{clauseValue}")
     public @ResponseBody Integer updateValue(@PathVariable("table") String table,
