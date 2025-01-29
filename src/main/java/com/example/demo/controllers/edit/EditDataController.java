@@ -25,7 +25,7 @@ public class EditDataController<T> {
         int result = service.execute(command);
 
         // set default value
-        command = "update ArtikulsDB set sklad = 'Office'";
+        command = "update " + table + " set sklad = 'Office'";
 
         service.execute(command);
 
