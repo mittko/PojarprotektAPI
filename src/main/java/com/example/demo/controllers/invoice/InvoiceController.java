@@ -101,7 +101,7 @@ public class InvoiceController<T> {
                         while (rs.next()) {
                             ArtikulInfo art = new ArtikulInfo(rs.getString(1),
                                     rs.getString(2), rs.getString(3), rs.getString(4),
-                                    rs.getString(5));
+                                    rs.getString(5),rs.getString(6));
                             artikulsInfo.add(art);
                         }
                     }
@@ -277,10 +277,11 @@ public class InvoiceController<T> {
                     });
                 }
 
+                // DECREASE ARTIKULS QUANTITY
                 for(InvoiceModel model : body.getChildInvoiceModels()) {
                       String invoiceByKotragent = model.getInvoiceByKontragent();
                       if(invoiceByKotragent != null) {
-                          command = "select artikul, quantity, client, invoice, date from ArtikulsDB"
+                          command = "select artikul, quantity, client, invoice, date, sklad from ArtikulsDB"
                                   + " where ( (client = "
                                   + "'"
                                   + model.getKontragent()
@@ -292,6 +293,10 @@ public class InvoiceController<T> {
                                   + "'"
                                   + model.getMake()
                                   + "')"
+                                  + " and (sklad = "
+                                  + "'"
+                                  + model.getSklad()
+                                  + "')"
                                   + " and (quantity > 0) )";
 
                           ArrayList<ArtikulInfo> artikulsInfo = new ArrayList<>();
@@ -301,7 +306,7 @@ public class InvoiceController<T> {
                                 while (rs.next()) {
                                     ArtikulInfo art = new ArtikulInfo(rs.getString(1),
                                             rs.getString(2), rs.getString(3), rs.getString(4),
-                                            rs.getString(5));
+                                            rs.getString(5),rs.getString(6));
                                     artikulsInfo.add(art);
                                 }
                             }
@@ -315,7 +320,7 @@ public class InvoiceController<T> {
                         for(ArtikulInfo artikulInfo : artikulsInfo) {
                             command = "update ArtikulsDB"
                                     + " set quantity = (quantity - ?) where (artikul = ? and client" +
-                                    " = ? and invoice = ?)";//  and (quantity > 0)
+                                    " = ? and invoice = ? and sklad = ?)";//  and (quantity > 0)
 
                             if(quantityToDecease > artikulInfo.getQuantity()) {
                                service.execute(command, new PreparedStatementCallback<T>() {
@@ -325,6 +330,7 @@ public class InvoiceController<T> {
                                        ps.setString(2, artikulInfo.getArtikulName());
                                        ps.setString(3, artikulInfo.getKontragent());
                                        ps.setString(4, artikulInfo.getInvoiceByKontragent());
+                                       ps.setString(5, artikulInfo.getSklad());
                                        ps.executeUpdate();
                                    }
                                });
@@ -340,6 +346,7 @@ public class InvoiceController<T> {
                                         ps.setString(2, artikulInfo.getArtikulName());
                                         ps.setString(3, artikulInfo.getKontragent());
                                         ps.setString(4, artikulInfo.getInvoiceByKontragent());
+                                        ps.setString(5,artikulInfo.getSklad());
                                         ps.executeUpdate();
                                     }
                                 });

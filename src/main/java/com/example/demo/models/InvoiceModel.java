@@ -1,6 +1,6 @@
 package com.example.demo.models;
 
-public class InvoiceModel<T> {
+public class InvoiceModel {
 
     private String id;
     private String payment;
@@ -22,6 +22,16 @@ public class InvoiceModel<T> {
     private String _client;
 
     private String artikul;
+
+    private String sklad;
+
+    public String getSklad() {
+        return sklad;
+    }
+
+    public void setSklad(String sklad) {
+        this.sklad = sklad;
+    }
 
     public String getArtikul() {
         return artikul;

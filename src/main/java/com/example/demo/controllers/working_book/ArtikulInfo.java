@@ -11,10 +11,11 @@ public class ArtikulInfo implements Comparable<ArtikulInfo> {
 	private String invoiceByKontragent;
 	private String dateString;
 	private Date date;
+	private String sklad;
 	final private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 
 	public ArtikulInfo(String artikulName, String quantityStr,
-                       String kontragent, String invoiceByKontragent, String dateString) {
+                       String kontragent, String invoiceByKontragent, String dateString, String sklad) {
 		super();
 		this.artikulName = artikulName;
 		this.quantity = Integer.parseInt(quantityStr);
@@ -27,6 +28,7 @@ public class ArtikulInfo implements Comparable<ArtikulInfo> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		this.sklad = sklad;
 	}
 
 	public String getDateString() {
@@ -51,6 +53,10 @@ public class ArtikulInfo implements Comparable<ArtikulInfo> {
 
 	public Date getDate() {
 		return date;
+	}
+
+	public String getSklad() {
+		return sklad;
 	}
 
 	@Override
