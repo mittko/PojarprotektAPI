@@ -60,7 +60,7 @@ public class InvoiceController<T> {
         service.execute(command);
 
         command = "insert into AcquittanceChildDB " +
-                " values ( ?, ?, ?, ?, ?, ?, ?)";
+                " values ( ?, ?, ?, ?, ?, ?, ?, ?)";
 
         for(AcquittanceModel model : body.getChildModels()) {
             service.execute(command, new PreparedStatementCallback<T>() {
@@ -73,6 +73,7 @@ public class InvoiceController<T> {
                     ps.setString(5, model.getPrice());
                     ps.setString(6, model.getValue());
                     ps.setString(7, model.getClient());
+                    ps.setString(8,model.getSklad());
                     ps.executeUpdate();
                 }
             });
@@ -80,7 +81,7 @@ public class InvoiceController<T> {
         for(AcquittanceModel model : body.getChildModels()) {
             String invoiceByKotragent = model.getInvoiceByKontragent();
             if(invoiceByKotragent != null) {
-                command = "select artikul, quantity, client, invoice, date from " + artikulTable
+                command = "select artikul, quantity, client, invoice, date, sklad from " + artikulTable
                         + " where ( (client = "
                         + "'"
                         + model.getKontragent()
@@ -91,6 +92,10 @@ public class InvoiceController<T> {
                         + " and (artikul = "
                         + "'"
                         + model.getArtikul()
+                        + "')"
+                        + " and (sklad = "
+                        + "'"
+                        + model.getSklad()
                         + "')"
                         + " and (quantity > 0) )";
 
@@ -115,7 +120,7 @@ public class InvoiceController<T> {
                 for(ArtikulInfo artikulInfo : artikulsInfo) {
                     command = "update " + artikulTable
                             + " set quantity = (quantity - ?) where (artikul = ? and client" +
-                            " = ? and invoice = ?)";//  and (quantity > 0)
+                            " = ? and invoice = ? and sklad = ?)";//  and (quantity > 0)
 
                     if(quantityToDecease > artikulInfo.getQuantity()) {
                         service.execute(command, new PreparedStatementCallback<T>() {
@@ -125,6 +130,7 @@ public class InvoiceController<T> {
                                 ps.setString(2, artikulInfo.getArtikulName());
                                 ps.setString(3, artikulInfo.getKontragent());
                                 ps.setString(4, artikulInfo.getInvoiceByKontragent());
+                                ps.setString(5,artikulInfo.getSklad());
                                 ps.executeUpdate();
                             }
                         });
@@ -141,6 +147,7 @@ public class InvoiceController<T> {
                                 ps.setString(2, artikulInfo.getArtikulName());
                                 ps.setString(3, artikulInfo.getKontragent());
                                 ps.setString(4, artikulInfo.getInvoiceByKontragent());
+                                ps.setString(5, artikulInfo.getSklad());
                                 ps.executeUpdate();
                             }
                         });
@@ -194,7 +201,7 @@ public class InvoiceController<T> {
         service.execute(command);
 
         command = "insert into ProformChildDB2"
-                + " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";;
+                + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";;
 
         for(InvoiceModel model : body.getChildInvoiceModels()) {
 
@@ -210,6 +217,7 @@ public class InvoiceController<T> {
                     ps.setString(7, model.getClient());
                     ps.setString(8, model.getKontragent());
                     ps.setString(9, model.getInvoiceByKontragent());
+                    ps.setString(10,model.getSklad());
                     ps.executeUpdate();
                 }
             });
@@ -256,7 +264,7 @@ public class InvoiceController<T> {
         service.execute(command);
 
         command = "insert into InvoiceChildDB7"
-                + " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";;
+                + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";;
 
                 for(InvoiceModel model : body.getChildInvoiceModels()) {
 
@@ -272,6 +280,8 @@ public class InvoiceController<T> {
                             ps.setString(7, model.getClient());
                             ps.setString(8, model.getKontragent());
                             ps.setString(9, model.getInvoiceByKontragent());
+                            ps.setString(10,model.getSklad());
+
                             ps.executeUpdate();
                         }
                     });
@@ -393,8 +403,8 @@ public class InvoiceController<T> {
 
         command ="select ProformChildDB2.make, ProformChildDB2.med, ProformChildDB2.quantity,"
                 + " ProformChildDB2.price, ProformChildDB2.value, ProformParentDB.discount,"
-                + " ProformChildDB2.kontragent, ProformChildDB2.invoiceByKontragent " +
-                "from ProformParentDB , ProformChildDB2 where ProformParentDB.id = '"
+                + " ProformChildDB2.kontragent, ProformChildDB2.invoiceByKontragent , ProformChildDB2.sklad" +
+                " from ProformParentDB , ProformChildDB2 where ProformParentDB.id = '"
                 + id + "' and ProformChildDB2.id = '" + id + "'";
 
 
@@ -412,7 +422,7 @@ public class InvoiceController<T> {
                   model.setDiscount(resultSet.getString(6));
                   model.setKontragent(resultSet.getString(7));
                   model.setInvoiceByKontragent(resultSet.getString(8));
-
+                  model.setSklad(resultSet.getString(9));
                   childInvoiceModels.add((T) model);
                 }
             }

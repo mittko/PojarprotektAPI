@@ -18,6 +18,16 @@ public class AcquittanceModel {
     private String invoiceByKontragent;
     private String kontragent;
 
+    private String sklad;
+
+    public void setSklad(String sklad) {
+        this.sklad = sklad;
+    }
+
+    public String getSklad() {
+        return sklad;
+    }
+
     public String getInvoiceByKontragent() {
         return invoiceByKontragent;
     }

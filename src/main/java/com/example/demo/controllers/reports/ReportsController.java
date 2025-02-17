@@ -330,6 +330,7 @@ public class ReportsController<T> {
                     acquittanceModel.setPrice(resultSet.getString(10));
                     acquittanceModel.set_value(resultSet.getString(11));
                     acquittanceModel.set_client(resultSet.getString(12));
+                    acquittanceModel.setSklad(resultSet.getString(13));
 
                     acquittanceList.add((T) acquittanceModel);
                 }
@@ -375,6 +376,7 @@ public class ReportsController<T> {
                     invoiceModel.set_client(resultSet.getString(15));
                     invoiceModel.setKontragent(resultSet.getString(16));
                     invoiceModel.setInvoiceByKontragent(resultSet.getString(17));
+                    invoiceModel.setSklad(resultSet.getString(18));
 
                     invoices.add((T) invoiceModel);
                 }
