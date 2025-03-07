@@ -24,8 +24,9 @@ public class GetTechnicalReview<T> {
                                                                        @RequestParam("to") String to) throws SQLException {
         ArrayList<T> technicalReviewList = new ArrayList<>();
         repoService.getResult(String.format("select client, type, wheight, T_O, P, HI, number, additional_data from ProtokolTableDB5 "
-                        + " where (T_O <> 'не' and T_O between Date('%s') and Date('%s') or P <> 'не' and P between Date('%s')" +
-                        " and Date('%s') or  HI <> 'не' and HI between Date('%s') and Date('%s') ) and (uptodate = 'no')",
+                        + " where (T_O <> 'не' AND T_O LIKE '__.__.____' and T_O between Date('%s') and Date('%s') " +
+                        "or P <> 'не' AND P LIKE '__.__.____'  and P between Date('%s')" +
+                        " and Date('%s') or  HI <> 'не' AND HI LIKE '__.__.____'  and HI between Date('%s') and Date('%s') ) and (uptodate = 'no')",
                 from, to, from, to, from, to), new ResultSetCallback() {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
