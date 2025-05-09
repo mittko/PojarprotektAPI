@@ -85,11 +85,17 @@ public class ReportsController<T> {
                " where date between Date('"+fromDate+"') and Date('"+toDate+"')" +
                " and (uptodate = 'no' or uptodate is NULL) order by number";// CAST(date as DATE) desc //or LENGTH(uptodate) = 0
 
+        final int[] id = {1};
         repoService.getResult(command, new ResultSetCallback() {
             @Override
             public void result(ResultSet resultSet) throws SQLException {
                 while (resultSet.next()) {
+                    id[0]++;
                     ProtokolModel protokolModel = new ProtokolModel();
+                    String client = resultSet.getString(1);
+                    if(client.equalsIgnoreCase("Деян Димов")) {
+                        System.out.printf("%d %s\n", id[0], client);
+                    }
                     protokolModel.setClient(resultSet.getString(1));
                     protokolModel.setType(resultSet.getString(2));
                     protokolModel.setWheight(resultSet.getString(3));
@@ -120,6 +126,9 @@ public class ReportsController<T> {
         HashMap<String, String> hashMap = new HashMap<String, String>();
         for(T t : data) {
            ProtokolModel model = (ProtokolModel) t;
+           if(model.getNumber().equalsIgnoreCase("-")) {
+               continue;
+           }
             command = "select id, date from InvoiceParentDB5"
                     + " where protokol = '" + model.getNumber() + "'";
             repoService.getResult(command, new ResultSetCallback() {

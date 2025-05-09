@@ -118,7 +118,7 @@ public class ProtokolModel {
     }
 
     public String getNumber() {
-        return number;
+        return number != null ? number : client;
     }
 
     public void setNumber(String number) {
