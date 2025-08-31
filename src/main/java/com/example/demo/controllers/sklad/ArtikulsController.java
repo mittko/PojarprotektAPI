@@ -158,25 +158,29 @@ public class ArtikulsController<T> {
 
     }
 
-    @PutMapping("/edit_artikul_quantity/{table}/{artiukl}/{kontragent}/{invoiceByKontragent}/{newQuantity}")
-    public int editArtikulQuantity(@PathVariable("table") String table,@PathVariable("artiukl") String artikul, @PathVariable("kontragent") String kontragent,
+    @PutMapping("/edit_artikul_quantity/{table}/{artiukl}/{kontragent}/{invoiceByKontragent}/{sklad}/{newQuantity}")
+    public int editArtikulQuantity(@PathVariable("table") String table,
+                                   @PathVariable("artiukl") String artikul,
+                                   @PathVariable("kontragent") String kontragent,
                                    @PathVariable("invoiceByKontragent") String invoiceByKontragent,
+                                   @PathVariable("sklad") String sklad,
                                    @PathVariable("newQuantity") String newQuantity) throws SQLException {
-      String command = "update " + table
-              + " set quantity = ? where (artikul = ? and client = ? and invoice = ?)";
+        String command = "update " + table
+                + " set quantity = ? where (artikul = ? and client = ? and invoice = ? and sklad = ?)";
         final int[] update = new int[1];
-      service.execute(command, new PreparedStatementCallback<T>() {
-          @Override
-          public void callback(PreparedStatement ps) throws SQLException {
-              ps.setString(1, newQuantity);
-              ps.setString(2, artikul);
-              ps.setString(3, kontragent);
-              ps.setString(4, invoiceByKontragent);
-              update[0] = ps.executeUpdate();
-          }
-      });
+        service.execute(command, new PreparedStatementCallback<T>() {
+            @Override
+            public void callback(PreparedStatement ps) throws SQLException {
+                ps.setString(1, newQuantity);
+                ps.setString(2, artikul);
+                ps.setString(3, kontragent);
+                ps.setString(4, invoiceByKontragent);
+                ps.setString(5, sklad);
+                update[0] = ps.executeUpdate();
+            }
+        });
 
-      return update[0];
+        return update[0];
     }
 
 
