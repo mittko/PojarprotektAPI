@@ -1,6 +1,7 @@
 package com.example.demo.security;
 
 
+import com.example.demo.utils.TenantContext;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.AuthenticationException;
@@ -28,7 +29,7 @@ public class JwtUtil {
         Claims claims = Jwts.claims().setSubject(user.getUsser());
         claims.put("firstName",user.getUsser());
         claims.put("lastName",user.getPassword());
-        Date tokenCreateTime = new Date();
+        claims.put("tenantId", TenantContext.getCurrentTenant());
         long accessTokenValidity = 604800000;//one week
         Date tokenValidity = new Date(System.currentTimeMillis() + accessTokenValidity);
         return Jwts.builder()

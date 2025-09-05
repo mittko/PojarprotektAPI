@@ -1,5 +1,6 @@
 package com.example.demo.db;
 
+import com.example.demo.utils.TenantContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -28,7 +29,8 @@ public class DBManager {
 
 
     public static Connection getEmbeddedConnection() {
-        String embeddedConnection = "jdbc:derby:D:/RealDBAPI";// to build Pojarprotect -> RealDBAPI for LPS -> RealDBLPS
+        String tenantName  = TenantContext.getCurrentTenant();
+        String embeddedConnection = String.format("jdbc:derby:D:/%s",tenantName);
         Connection connection;
         try {
             String driver = "org.apache.derby.jdbc.EmbeddedDriver";
