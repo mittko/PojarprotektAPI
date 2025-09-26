@@ -25,6 +25,16 @@ public class InvoiceModel {
 
     private String sklad;
 
+    private String eik;
+
+    public void setEik(String eik) {
+        this.eik = eik;
+    }
+
+    public String getEik() {
+        return eik;
+    }
+
     public String getSklad() {
         return sklad;
     }

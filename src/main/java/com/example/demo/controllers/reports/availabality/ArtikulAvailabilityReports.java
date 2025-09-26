@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @RestController
 public class ArtikulAvailabilityReports<T> {
@@ -83,10 +84,27 @@ public class ArtikulAvailabilityReports<T> {
             @RequestParam(value = "fromDate") String fromDate,
             @RequestParam(value = "toDate") String toDate,
             @RequestParam(value = "artikul", required = false) String artikul) throws SQLException {
+
+        HashMap<String,String> clientMap = new HashMap<>();
+
+        String getEikCommand = "select firm, eik from FirmsTable";
+        repoService.getResult(getEikCommand, new ResultSetCallback() {
+            @Override
+            public void result(ResultSet resultSet) throws SQLException {
+                while (resultSet.next()) {
+                    String client = resultSet.getString(1);
+                    String eik = resultSet.getString(2);
+                    clientMap.put(client,eik != null ? eik : "");
+                }
+            }
+        });
         ArrayList<T> sales = new ArrayList<>();
-        String command = String.format("select InvoiceChildDB7.id, InvoiceChildDB7.client, InvoiceChildDB7.invoiceByKontragent," +
-                " InvoiceChildDB7.kontragent, InvoiceChildDB7.artikul, InvoiceChildDB7.med, InvoiceChildDB7.quantity," +
-                " InvoiceChildDB7.price, InvoiceParentDB5.date from InvoiceChildDB7 ," +
+        String command = String.format("select InvoiceChildDB7.id, InvoiceChildDB7.client," +
+                " InvoiceChildDB7.invoiceByKontragent," +
+                " InvoiceChildDB7.kontragent, InvoiceChildDB7.artikul, InvoiceChildDB7.value," +
+                "  InvoiceChildDB7.quantity, InvoiceChildDB7.med," +
+                " InvoiceChildDB7.price, InvoiceChildDB7.sklad, InvoiceParentDB5.payment," +
+                " InvoiceParentDB5.date from InvoiceChildDB7 ," +
                 " InvoiceParentDB5  where InvoiceParentDB5.id = InvoiceChildDB7.id" +
                 " and InvoiceParentDB5.date between Date('%s') and Date('%s')",fromDate,toDate);
 
@@ -100,15 +118,20 @@ public class ArtikulAvailabilityReports<T> {
                 while (resultSet.next()) {
                     InvoiceModel invoiceDataForSalesReports = new InvoiceModel();
 
+                    String clientName = resultSet.getString(2);
                     invoiceDataForSalesReports.setId(resultSet.getString(1));
-                    invoiceDataForSalesReports.setClient(resultSet.getString(2));
+                    invoiceDataForSalesReports.setClient(clientName);
                     invoiceDataForSalesReports.setInvoiceByKontragent(resultSet.getString(3));
                     invoiceDataForSalesReports.setKontragent(resultSet.getString(4));
                     invoiceDataForSalesReports.setArtikul(resultSet.getString(5));
-                    invoiceDataForSalesReports.setMed(resultSet.getString(6));
+                    invoiceDataForSalesReports.setValue(resultSet.getString(6));
                     invoiceDataForSalesReports.setQuantity(resultSet.getString(7));
-                    invoiceDataForSalesReports.setPrice(resultSet.getString(8));
-                    invoiceDataForSalesReports.setDate(resultSet.getString(9));
+                    invoiceDataForSalesReports.setMed(resultSet.getString(8));
+                    invoiceDataForSalesReports.setPrice(resultSet.getString(9));
+                    invoiceDataForSalesReports.setSklad(resultSet.getString(10));
+                    invoiceDataForSalesReports.setPayment(resultSet.getString(11));
+                    invoiceDataForSalesReports.setDate(resultSet.getString(12));
+                    invoiceDataForSalesReports.setEik(clientMap.get(clientName));
 
                     sales.add((T) invoiceDataForSalesReports);
                 }
