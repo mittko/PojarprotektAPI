@@ -142,16 +142,16 @@ public class ArtikulAvailabilityReports<T> {
 
     @GetMapping(path = "/delivery_data_for_sales")
     public @ResponseBody ArrayList<T> getDeliveryDataForSale(
-            @RequestParam(value = "fromDate") String fromDate,
-            @RequestParam(value = "toDate") String toDate,
+            @RequestParam(value = "fromDate", required = false) String fromDate,
+            @RequestParam(value = "toDate", required = false) String toDate,
             @RequestParam(value = "artikul",required = false) String artikul, HttpServletResponse response) throws SQLException {
         ArrayList<T> sales = new ArrayList<>();
-        String command = String.format("select DeliveryArtikulsDB2.invoiceByKontragent, DeliveryArtikulsDB2.kontragent," +
+        String command = "select DeliveryArtikulsDB2.invoiceByKontragent, DeliveryArtikulsDB2.kontragent," +
                 " DeliveryArtikulsDB2.date, DeliveryArtikulsDB2.artikul, DeliveryArtikulsDB2.value" +
-                " from DeliveryArtikulsDB2 where DeliveryArtikulsDB2.date between " + "Date('%s') and Date('%s')", fromDate, toDate);
+                " from DeliveryArtikulsDB2";// where DeliveryArtikulsDB2.date between " + "Date('%s') and Date('%s')", fromDate, toDate);
 
         if(artikul != null) {
-            command += String.format(" and DeliveryArtikulsDB2.artikul = '%s'", artikul);
+            command += String.format(" where DeliveryArtikulsDB2.artikul = '%s'", artikul);
         }
         command += " order by CAST(date as DATE) desc";
         repoService.getResult(command, new ResultSetCallback() {
